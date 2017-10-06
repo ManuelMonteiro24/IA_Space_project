@@ -1,11 +1,12 @@
 from datetime import date
+from graphs import graph_struct
 
 def read_input_file(file_name):
     "Function that receives name of file to read from and returns a structure with list of vertex, edges and launches"
 
+    graph_obj = graph_struct.Graph();
+
     #data structs to test
-    vertex_list = []
-    edge_list = []
     launch_list = []
 
     try:
@@ -20,7 +21,7 @@ def read_input_file(file_name):
                     try:
                         float(splitted_line[1])
                         #valid vertex line
-                        vertex_list.append([splitted_line[0], splitted_line[1]])
+                        graph_obj.add_vertex(splitted_line[0], float(splitted_line[1]))
                     except ValueError:
                         continue
 
@@ -29,7 +30,7 @@ def read_input_file(file_name):
                     if splitted_line[0] != "E" or splitted_line[1][0] != "V" or splitted_line[2][0] != "V":
                         continue
                     #valid edge line
-                    edge_list.append([splitted_line[1], splitted_line[2]])
+                    graph_obj.add_edge(splitted_line[1], splitted_line[2])
 
                 elif len(splitted_line) == 5:
                     #launch line
@@ -47,7 +48,7 @@ def read_input_file(file_name):
                         continue
                 else:
                     continue
-        return [vertex_list, edge_list, launch_list]
+        return [graph_obj, launch_list]
         input_file.close()
 
     except IOError:
@@ -59,5 +60,5 @@ def generate_output_file(solved_launch_list):
     output_file = open("solver_solution.txt", "w")
     for node in solved_launch_list:
         output_file.write("Output file TODO...")
-        
+
     output_file.close()
