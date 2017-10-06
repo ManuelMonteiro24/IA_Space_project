@@ -9,8 +9,7 @@ class Vertex:
             if neighbor.id not in self.neighbors:
                 self.neighbors.append(neighbor.id)
                 neighbor.neighbors.append(self.id)
-                self.neighbors = sorted(self.neighbors, key=weight)
-                neighbor.neighbors = sorted(neighbor.neighbors, key=weight)
+
         else:
             return False
         
@@ -20,8 +19,7 @@ class Vertex:
                 if neighbor.id not in self.neighbors:
                     self.neighbors.append(neighbor.id)
                     neighbor.neighbors.append(self.id)
-                    self.neighbors = sorted(self.neighbors, key=weight)
-                    neighbor.neighbors = sorted(neighbor.neighbors, key=weight)
+                
             else:
                 return False
         
