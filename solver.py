@@ -20,7 +20,9 @@ print("launch_list: ", launch_list, "\n")
 
 if sys.argv[1] == "-i":
     print("run informed search mode TODO...\n")
+    #receive output from function and send to generate_output_file function
 else:
     print("run uninformed search mode TODO...\n")
+    #receive output from function and send to generate_output_file function
 
 file_functions.generate_output_file([])
