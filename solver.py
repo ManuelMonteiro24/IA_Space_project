@@ -1,4 +1,6 @@
 import sys
+import strategy.stack
+import uninformed_search_function
 from graphs import graph_struct
 from utils import file_functions
 
@@ -19,7 +21,10 @@ launch_list = inputdata[1]
 print("launch_list: ", launch_list, "\n")
 
 if sys.argv[1] == "-i":
-    print("run informed search mode TODO...\n")
+
+    stack_obj = strategy.stack.Stack()
+    uninformed_search_function.general_search(,stack_obj) #needs problem in arguments returns stack_obj
+
     #receive output from function and send to generate_output_file function
 else:
     print("run uninformed search mode TODO...\n")
