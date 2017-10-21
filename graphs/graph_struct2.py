@@ -101,7 +101,7 @@ class Node():
         launch_payload = -1
         weight = -1
         path_cost = 0
-        modules_sent_to_space = set()
+        modules_in_space = set()
 
 
 class Problem(Graph):
@@ -197,11 +197,16 @@ class Problem(Graph):
                     str_successor += self.vertices[i].id     
 
                 if total_weight != 0:
+
+                    for i in x:
+                        self.neighbors_modules_in_space = (self.neighbors_modules_in_space).union(self.vertices[i].neighbors)
+                    
                     new_node = Node()
                     new_node.launch_id = list(launches_dict.keys())[0] 
                     new_node.launch_payload = launches_dict[new_node.launch_id][0]
                     new_node.weight = total_weight
-                    new_node.path_cost = self.path_cost_calculator(current_node, new_node, launches_dict):
+                    new_node.path_cost = self.path_cost_calculator(current_node, new_node, launches_dict)
+                    new_node.modules_in_space = new_node.modules_in_space.union(set(str_successor))
                     successors[str_successor] = new_node
                     del launches_dict[list(launches_dict.keys())[0]]
                     total_weight = 0
