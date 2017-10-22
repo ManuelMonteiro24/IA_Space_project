@@ -105,11 +105,10 @@ class Node():
 
 
 class Problem(Graph):
-    def __init__(self, vertices_input):
-        self.launches_used = []
+    def __init__(self, vertices_input, neighbors_modules_in_space_INPUT):
         self.goal_state = set(vertices_input)
         self.vertices = vertices_input
-        self.neighbors_modules_in_space = set()
+        self.neighbors_modules_in_space = neighbors_modules_in_space_INPUT
 
 
     def path_cost_calculator(self, current_node, new_node, launches_dict):
@@ -224,9 +223,10 @@ class Problem(Graph):
                 print("h\n")  
 
                 if total_weight != 0:
+                    '''
                     for i in x:
                         self.neighbors_modules_in_space = (self.neighbors_modules_in_space).union(self.vertices[i].neighbors)
-                    
+                    '''
                     new_node = Node()
                     new_node.launch_id = list(launches_dict.keys())[0] 
                     new_node.launch_payload = launches_dict[new_node.launch_id][0]
