@@ -77,7 +77,7 @@ class Graph:
             for i in list_vertices[n+1:]:
                 if i in  self.vertices[list_vertices[n]]:
                     continue
-                else
+                else:
                     self.check_connection(list_vertices, n+1)
         return 
 
@@ -97,15 +97,15 @@ class Graph:
 
 class Node():
      def __init__(self):
-        launch_id = ''
-        launch_payload = -1
-        weight = -1
-        path_cost = 0
-        modules_in_space = set()
+        self.launch_id = ''
+        self.launch_payload = -1
+        self.weight = -1
+        self.path_cost = 0
+        self.modules_in_space = set()
 
 
 class Problem(Graph):
-    def __init__(self, vertices_input, current_node):
+    def __init__(self, vertices_input):
         self.launches_used = []
         self.goal_state = set(vertices_input)
         self.vertices = vertices_input
@@ -113,7 +113,7 @@ class Problem(Graph):
 
 
     def path_cost_calculator(self, current_node, new_node, launches_dict):
-        return current_node.path_cost + launches_dict(new_node.launch_id)[1] + new_node.weight*launches_dict(new_node.launch_id)[2] 
+        return current_node.path_cost + launches_dict[new_node.launch_id][1] + new_node.weight*(launches_dict[new_node.launch_id][2]) 
 
 
     def goal_test(self):
@@ -129,7 +129,7 @@ class Problem(Graph):
         unlaunched_modules_weight = 0
         launches_weight = 0
 
-        for i in ((self.vertices).difference(current_node.modules_in_space)):
+        for i in (set(self.vertices).difference(current_node.modules_in_space)):
             unlaunched_modules_weight += (self.vertices[i]).weight 
 
         for i in set(launches_dict):
@@ -147,27 +147,45 @@ class Problem(Graph):
     def neighborhood(self, combination):
         neigh = set()
         for i in  combination:
-            for n in self.vertices[i].neighbors:
-                neigh.add(n)
+                neigh = neigh.union(set(self.vertices[i].neighbors))
+
+        #print("\t\tNeighborhood: ", neigh, "\n")
 
         for i in combination:
-            if i not in combination:
+            if i not in neigh:
                 yield False
 
 
     def find_successor(self, launches_dict, current_node):
         modules_on_earth = set(self.vertices).difference(current_node.modules_in_space)
-        successors = {None: 0}
+
+        successors = dict()
+        new_node = Node()
+        successors['None'] = new_node
+
+        print("a\n")
+
+        if not launches_dict:
+            return False
+
+        print("b\n")
 
         unlaunched_modules_weight, launches_weight = self.weight_calculator(current_node, launches_dict)
 
+        print("c\n")
+
+
         #Check if launches available are enough to send the modules on Earth
-        if launches_weight < unlaunched_modules_weight
+        if launches_weight < unlaunched_modules_weight:
             return False
 
         launch_max_payload = launches_dict[list(launches_dict.keys())[0]][0]
 
+        print("d\n")
+
         for n in range(len(modules_on_earth)):
+
+            print(n)
 
             total_weight = 0
             count_comb = 0
@@ -175,29 +193,37 @@ class Problem(Graph):
 
             for x in combinations(modules_on_earth, n+1):
                 count_comb += 1
-                str_successor = ''
+                successors_id = set()
 
-                #Checks if there is at least a module that is a neighbor of a module already in space
-                if list(self.check_if_neighbor_in_space(x)) == []:
-                    count_breaks += 1
+                print("Combination: ", str(x), "\n")
+
+                print("e\n")
+                #Checks if there is at least a module that is a neighbor of a module already in space, except for the first node with modules to be sent
+                if list(self.check_if_neighbor_in_space(x)) == [] and current_node.modules_in_space:
+                    print("teste 1\n")
                     break
 
                 #Check if there is connection between modules
-                if False in set(self.neighborhood(x)):
-                    count_breaks += 1
+                print(list(self.neighborhood(x)))
+
+                if False in list(self.neighborhood(x)) and n>0:
+                    print("teste 2\n")
                     break
 
+                print("g")
+                
                 #Check if launch max. payload is enough to send the set of modules
                 for i in x:
                     total_weight += self.vertices[i].weight              
                     if total_weight > launch_max_payload:
+                        print("teste 4\n")
                         total_weight = 0
                         count_breaks += 1
                         break                    
-                    str_successor += self.vertices[i].id     
+                    successors_id.add(self.vertices[i].id)     
+                print("h\n")  
 
                 if total_weight != 0:
-
                     for i in x:
                         self.neighbors_modules_in_space = (self.neighbors_modules_in_space).union(self.vertices[i].neighbors)
                     
@@ -206,14 +232,16 @@ class Problem(Graph):
                     new_node.launch_payload = launches_dict[new_node.launch_id][0]
                     new_node.weight = total_weight
                     new_node.path_cost = self.path_cost_calculator(current_node, new_node, launches_dict)
-                    new_node.modules_in_space = new_node.modules_in_space.union(set(str_successor))
-                    successors[str_successor] = new_node
-                    del launches_dict[list(launches_dict.keys())[0]]
-                    total_weight = 0
+                    new_node.modules_in_space = (current_node.modules_in_space).union(successors_id)
+                    #print("m Current modules in space: ", current_node.modules_in_space, "Str: ", set(successors_id), "New modules in space: ", new_node.modules_in_space, "\n")
+                    successors[str(successors_id)] = new_node
+                    total_weight = 0                    
 
+            print("n\n")
             #if for a combination of n modules there are no successors to add there won't be for combinations with higher than n modules (weight is greater)
             if count_breaks == count_comb:
                 break
 
+        del launches_dict[list(launches_dict.keys())[0]]
         return successors
 
