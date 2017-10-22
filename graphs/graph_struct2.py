@@ -162,16 +162,16 @@ class Problem(Graph):
         new_node = Node()
         successors['None'] = new_node
 
-        print("a\n")
+        #print("a\n")
 
         if not launches_dict:
             return False
 
-        print("b\n")
+        #print("b\n")
 
         unlaunched_modules_weight, launches_weight = self.weight_calculator(current_node, launches_dict)
 
-        print("c\n")
+        #print("c\n")
 
 
         #Check if launches available are enough to send the modules on Earth
@@ -180,7 +180,7 @@ class Problem(Graph):
 
         launch_max_payload = launches_dict[list(launches_dict.keys())[0]][0]
 
-        print("d\n")
+        #print("d\n")
 
         for n in range(len(modules_on_earth)):
 
@@ -196,20 +196,19 @@ class Problem(Graph):
 
                 print("Combination: ", str(x), "\n")
 
-                print("e\n")
+                #print("e\n")
+                
                 #Checks if there is at least a module that is a neighbor of a module already in space, except for the first node with modules to be sent
                 if list(self.check_if_neighbor_in_space(x)) == [] and current_node.modules_in_space:
                     print("teste 1\n")
-                    break
+                    continue
 
                 #Check if there is connection between modules
-                print(list(self.neighborhood(x)))
-
                 if False in list(self.neighborhood(x)) and n>0:
                     print("teste 2\n")
-                    break
+                    continue
 
-                print("g")
+                #print("g")
                 
                 #Check if launch max. payload is enough to send the set of modules
                 for i in x:
@@ -220,7 +219,7 @@ class Problem(Graph):
                         count_breaks += 1
                         break                    
                     successors_id.add(self.vertices[i].id)     
-                print("h\n")  
+                #print("h\n")  
 
                 if total_weight != 0:
                     
@@ -237,7 +236,7 @@ class Problem(Graph):
                     successors[str(successors_id)] = new_node
                     total_weight = 0                    
 
-            print("n\n")
+            print("next range\n")
             #if for a combination of n modules there are no successors to add there won't be for combinations with higher than n modules (weight is greater)
             if count_breaks == count_comb:
                 break
