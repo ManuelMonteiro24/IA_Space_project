@@ -1,5 +1,7 @@
 from datetime import *
 from graphs import graph_struct
+import operator
+
 
 class Launch:
 
@@ -112,11 +114,30 @@ def read_input_file(file_name):
     except IOError:
         return None
 
-def generate_output_file(launches,solved_launch_list):
+
+#needs adaptation
+def generate_output(launches,solved_launch):
     "Function that receives a list with the solved launch data and generates the proper output file"
 
-    output_file = open("solver_solution.txt", "w")
-    for node in solved_launch_list:
-        output_file.write("Output file TODO...")
+    if solved_launch == False:
+        print("0")
+        return
 
-    output_file.close()
+    aux_str = ""
+
+    cost_sum = 0
+
+    sorted_x = sorted(solved_launch, key=operator.attrgetter('score'))
+
+    for node in sorted(solved_launch.values(), key=operator.attrgetter('launch_id')):
+        aux_str = launches.launch_dict[node.launch_id].date
+
+        for module in node.modules_in_space:
+            aux_str += " " + module + " "
+
+        aux_str += " " + node.launch_cost
+        cost_sum += node.launch_cost
+        print(aux_str)
+
+    print(cost_sum)
+    return

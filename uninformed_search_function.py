@@ -1,6 +1,10 @@
+import strategy
+import graphs
+
 def general_search(problem,strategy):
 
     #set root node of tree
+
 
     while:
 

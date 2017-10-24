@@ -30,4 +30,4 @@ else:
     print("run uninformed search mode TODO...\n")
     #receive output from function and send to generate_output_file function
 
-file_functions.generate_output_file(launch_obj,[])
+#file_functions.generate_output(launch_obj,[])
