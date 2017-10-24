@@ -1,6 +1,6 @@
 import sys
 import strategy.stack
-import uninformed_search_function
+#import uninformed_search_function
 from graphs import graph_struct
 from utils import file_functions
 
@@ -16,18 +16,18 @@ if inputdata == None:
 
 graph_obj = inputdata[0]
 print("Graph print: \n", graph_obj.toString())
-launch_list = inputdata[1]
+launch_obj = inputdata[1]
 
-print("launch_list: ", launch_list, "\n")
+print(str(launch_obj))
 
 if sys.argv[1] == "-i":
 
     stack_obj = strategy.stack.Stack()
-    uninformed_search_function.general_search(,stack_obj) #needs problem in arguments returns stack_obj
+    #uninformed_search_function.general_search(,stack_obj) needs problem in arguments returns stack_obj
 
     #receive output from function and send to generate_output_file function
 else:
     print("run uninformed search mode TODO...\n")
     #receive output from function and send to generate_output_file function
 
-file_functions.generate_output_file([])
+file_functions.generate_output_file(launch_obj,[])

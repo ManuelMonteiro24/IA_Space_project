@@ -1,5 +1,66 @@
-from datetime import date
+from datetime import *
 from graphs import graph_struct
+
+class Launch:
+
+    def __init__(self, date, max_payload, fixed_cost, variable_cost):
+        self.date = date
+        self.max_payload = max_payload
+        self.fixed_cost = fixed_cost
+        self.variable_cost = variable_cost
+
+    def __str__(self):
+        return "launch: %s %s %s %s" % (self.date, str(self.max_payload), str(self.fixed_cost), str(self.variable_cost))
+
+class Launches:
+
+    def __init__(self):
+        self.launch_list = []
+        self.launch_dict = {}
+
+    def ordered_insertion_on_list(self, launch):
+
+        try:
+            launch_date_to_insert = date(int(launch.date[4:]),int(launch.date[2:4]),int(launch.date[:2]))
+        except:
+            return
+
+        aux_index = 0
+        if len(self.launch_list) == 0:
+            self.launch_list.append(launch)
+            return
+
+        for x in self.launch_list:
+            launch_date_to_compar = date(int(x.date[4:]),int(x.date[2:4]),int(x.date[:2]))
+            if launch_date_to_insert <= launch_date_to_compar:
+                launch_list.insert(aux_index,launch)
+                return
+            aux_index = aux_index + 1
+
+        self.launch_list.append(launch)
+        return
+
+    def generate_dictionary_trough_list(self):
+        aux_index = 1
+        for x in self.launch_list:
+            self.launch_dict[aux_index] = x
+            aux_index = aux_index + 1
+
+        return
+
+    def __str__(self):
+
+        return_str = "Launches dictionary:"
+
+        for key, value in self.launch_dict.items():
+            return_str += " key-- " + str(key) + " value-- "+ str(value)
+
+        return_str += "\nLaunches list:"
+
+        for value in self.launch_list:
+            return_str += " " +str(value)
+
+        return return_str
 
 def read_input_file(file_name):
     "Function that receives name of file to read from and returns a structure with list of vertex, edges and launches"
@@ -7,7 +68,7 @@ def read_input_file(file_name):
     graph_obj = graph_struct.Graph();
 
     #data structs to test
-    launch_list = []
+    obj_launches = Launches()
 
     try:
         with open(file_name, "r") as input_file:
@@ -36,25 +97,22 @@ def read_input_file(file_name):
                     #launch line
                     if splitted_line[0] != "L" or len(splitted_line[1]) != 8:
                         continue
-                    try:
-                        int(splitted_line[1])
-                        date(int(splitted_line[1][4:]),int(splitted_line[1][2:4]),int(splitted_line[1][:2]))
-                        float(splitted_line[2])
-                        float(splitted_line[3])
-                        float(splitted_line[4])
-                        #valid launch line
-                        launch_list.append([splitted_line[1], splitted_line[2], splitted_line[3], splitted_line[4]])
-                    except:
-                        continue
+
+                    #valid launch line (still need to check date validity)
+                    launch_obj = Launch(splitted_line[1],float(splitted_line[2]),float(splitted_line[3]),float(splitted_line[4]))
+                    obj_launches.ordered_insertion_on_list(launch_obj)
                 else:
                     continue
-        return [graph_obj, launch_list]
+
+        obj_launches.generate_dictionary_trough_list()
+
+        return [graph_obj, obj_launches]
         input_file.close()
 
     except IOError:
         return None
 
-def generate_output_file(solved_launch_list):
+def generate_output_file(launches,solved_launch_list):
     "Function that receives a list with the solved launch data and generates the proper output file"
 
     output_file = open("solver_solution.txt", "w")
