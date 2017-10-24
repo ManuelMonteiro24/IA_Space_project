@@ -1,5 +1,5 @@
 from itertools import combinations
-from file_functions import *
+from utils import file_functions
 
 class Vertex:
     def __init__(self, id_vertex, weight = -1):
@@ -103,7 +103,7 @@ class Graph:
 
 class Node():
      def __init__(self):
-        self.launch_id = ''
+        self.launch_id = 0
         self.launch_payload = -1
         self.weight = -1
         self.path_cost = 0
@@ -118,8 +118,8 @@ class Problem(Graph):
         self.neighbors_modules_in_space = set()
 
 
-    def path_cost_calculator(self, current_node, new_node, launches_dict):
-        return current_node.path_cost + launches_dict[new_node.launch_id][1] + new_node.weight*(launches_dict[new_node.launch_id][2]) 
+    def path_cost_calculator(self, current_node, new_node, launch_obj):
+        return current_node.path_cost + launch_obj.launch_dict[new_node.launch_id].fixed_cost + new_node.weight*(launch_obj.launch_dict[new_node.launch_id].variable_cost) 
 
 
     def goal_test(self):
@@ -130,13 +130,13 @@ class Problem(Graph):
             return False
 
     # Calculates total weight od the nodes on Earth and the sum of the launches'payloads 
-    def weight_calculator(self, current_node, launches_dict):
+    def weight_calculator(self, current_node, launch_obj):
         unlaunched_modules_weight = 0
         launches_weight = 0
         for i in (set(self.vertices).difference(current_node.modules_in_space)):
             unlaunched_modules_weight += (self.vertices[i]).weight 
-        for i in set(launches_dict):
-            launches_weight += (launches_dict[i])[0]        
+        for i in set(launch_obj.launch_dict):
+            launches_weight += (launch_obj.launch_dict[i]).max_payload        
         return unlaunched_modules_weight, launches_weight
 
 
@@ -185,16 +185,16 @@ class Problem(Graph):
         modules_on_earth = set(self.vertices).difference(current_node.modules_in_space)
         successors = dict()
         
-        if not launches_dict:
+        if not launch_obj.launch_dict:
             return False
 
-        unlaunched_modules_weight, launches_weight = self.weight_calculator(current_node, launch_obj.launch_dict)
+        unlaunched_modules_weight, launches_weight = self.weight_calculator(current_node, launch_obj)
 
         #Check if launches available are enough to send the modules on Earth
         if launches_weight < unlaunched_modules_weight:
             return False
 
-        launch_max_payload = launches_dict[list(launches_dict.keys())[0]][0]
+        launch_max_payload = launch_obj.launch_dict[list(launch_obj.launch_dict.keys())[0]].max_payload
 
         for n in range(len(modules_on_earth)):
             print(n)
@@ -237,10 +237,10 @@ class Problem(Graph):
                         self.neighbors_modules_in_space = (self.neighbors_modules_in_space).union(self.vertices[i].neighbors)
                     
                     new_node = Node()
-                    new_node.launch_id = list(launches_dict.keys())[0] 
-                    new_node.launch_payload = launches_dict[new_node.launch_id][0]
+                    new_node.launch_id = list(launch_obj.launch_dict.keys())[0]
+                    new_node.launch_payload = launch_max_payload
                     new_node.weight = total_weight
-                    new_node.path_cost = self.path_cost_calculator(current_node, new_node, launches_dict)
+                    new_node.path_cost = self.path_cost_calculator(current_node, new_node, launch_obj)
                     new_node.modules_in_space = (current_node.modules_in_space).union(successors_id)
                     print("m Current modules in space: ", current_node.modules_in_space, "Str: ", set(successors_id), "New modules in space: ", new_node.modules_in_space, "\n")
                     successors[str(successors_id)] = new_node
@@ -252,13 +252,13 @@ class Problem(Graph):
                 break
 
         new_node = Node()
-        new_node.launch_id = list(launches_dict.keys())[0]
-        new_node.launch_payload = launches_dict[new_node.launch_id][0]
+        new_node.launch_id = list(launch_obj.launch_dict.keys())[0]
+        new_node.launch_payload = launch_max_payload
         new_node.weight = 0
-        new_node.path_cost = current_node.path_cost + launches_dict[list(launches_dict.keys())[0]][1]
+        new_node.path_cost = current_node.path_cost + launch_obj.launch_dict[list(launch_obj.launch_dict.keys())[0]].fixed_cost
         new_node.modules_in_space = current_node.modules_in_space        
         successors['None'] = new_node
 
-        del launches_dict[list(launches_dict.keys())[0]]
+        del launch_obj.launch_dict[list(launch_obj.launch_dict.keys())[0]]
         return successors
 
