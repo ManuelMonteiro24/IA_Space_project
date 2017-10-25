@@ -142,7 +142,7 @@ class Problem(Graph):
 
     def check_if_neighbor_in_space(self, combination): 
         for i in combination:
-            if i in self.neighbors_modules_in_space:
+            if i in self.neighbors_modules_in_space:                
                 yield True
 
 
@@ -153,37 +153,68 @@ class Problem(Graph):
         for i in combination:
             neigh = neigh.union(set(self.vertices[i].neighbors))
 
+        neigh = neigh.union(self.neighbors_modules_in_space)
         path_max = []
+        print("Neigh: ", neigh)
 
         for i in combinations(combination, 2):
             path = []
             self.find_path(list(i)[0], list(i)[1], path)
             if len(path) > len(path_max):
                 path_max = path
+                
+        print("Path max: ", path_max)
 
-        if set(path_max) == set(combination):
-            return True
+        for j in path_max:
+            if (j not in list(combination)):
+                if current_node.modules_in_space and (j not in current_node.modules_in_space):
+                    print("Nada1: ", j)
+                    return False
+                if not current_node.modules_in_space:
+                    print("Nada2: ", j)
+                    return False
 
-        if len(path_max) < len(combination):
-            extra_modules = set(combination) - set(path_max)
-            for i in extra_modules:
-                if i in neigh:
-                    return True
-                else:
-                    return False        
-        if len(path_max) > len(combination):
-            extra_modules = set(path_max) - set(combination)
-            if extra_modules in current_node.modules_in_space:
+        if len(path_max) == len(combination):
+            print("Igual")
+            if set(path_max) == set(combination):
                 return True
             else:
-                return False
+                extra_modules = set(combination) - set(path_max)
+                print("Extra modules1: ", extra_modules)
+                for i in extra_modules:
+                    if i in neigh:
+                        return True
+                    else:
+                        return False
 
-        return False
+        if len(path_max) < len(combination):
+            print("Menor")
+            extra_modules = set(combination) - set(path_max)
+            print("Extra modules2: ", extra_modules)
+            for i in extra_modules:
+                if i not in neigh:
+                    return False
+            return True  
+            '''  
+        if len(path_max) > len(combination):
+            print("Maior")
+            extra_modules = set(path_max) - set(combination)
+            print("Extra modules3: ", extra_modules)
+            for i in extra_modules:
+                if i not in current_node.modules_in_space:
+                    return False
+            return True        '''
+        return True
 
 
     def find_successor(self, launch_obj, current_node):
         modules_on_earth = set(self.vertices).difference(current_node.modules_in_space)
         successors = dict()
+
+        self.neighbors_modules_in_space = set()
+        for i in current_node.modules_in_space:            
+            self.neighbors_modules_in_space = self.neighbors_modules_in_space.union(set(self.vertices[i].neighbors))
+
         
         if not launch_obj.launch_dict:
             return False
@@ -197,6 +228,7 @@ class Problem(Graph):
         launch_max_payload = launch_obj.launch_dict[list(launch_obj.launch_dict.keys())[0]].max_payload
 
         for n in range(len(modules_on_earth)):
+        
             print(n)
 
             total_weight = 0
@@ -207,7 +239,7 @@ class Problem(Graph):
                 count_comb += 1
                 successors_id = set()
 
-                #print("Combination: ", str(x), "\n")
+                print("Combination: ", str(x), "\n")
                 
                 #Checks if there is at least a module that is a neighbor of a module already in space, except for the first node with modules to be sent
                 if list(self.check_if_neighbor_in_space(x)) == [] and current_node.modules_in_space:
@@ -231,11 +263,7 @@ class Problem(Graph):
                 
                 print("h\n")  
 
-                if total_weight != 0:
-                    
-                    for i in x:
-                        self.neighbors_modules_in_space = (self.neighbors_modules_in_space).union(self.vertices[i].neighbors)
-                    
+                if total_weight != 0:                  
                     new_node = Node()
                     new_node.launch_id = list(launch_obj.launch_dict.keys())[0]
                     new_node.launch_payload = launch_max_payload
