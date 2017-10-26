@@ -108,7 +108,7 @@ class Node():
         self.weight = -1
         self.path_cost = 0
         self.modules_in_space = set()
-
+        self.launch_cost = 0
 
 
 class Problem(Graph):
@@ -122,7 +122,11 @@ class Problem(Graph):
         return current_node.path_cost + launch_obj.launch_dict[new_node.launch_id].fixed_cost + new_node.weight*(launch_obj.launch_dict[new_node.launch_id].variable_cost) 
 
 
-    def goal_test(self):
+    def launch_cost(self, new_node, launch_obj):
+        new_node.launch_cost = launch_obj.launch_dict[new_node.launch_id].fixed_cost + new_node.weight*(launch_obj.launch_dict[new_node.launch_id].variable_cost)
+        return  new_node.launch_cost
+
+    def goal_test(self, current_node):
         if not (goal_state.intersection(current_node.modules_in_space)):
             print("\n Goal achieved!\n")
             return True
@@ -240,6 +244,7 @@ class Problem(Graph):
                     new_node.launch_payload = launch_max_payload
                     new_node.weight = total_weight
                     new_node.path_cost = self.path_cost_calculator(current_node, new_node, launch_obj)
+                    new_node.launch_cost = self.launch_cost(new_node, launch_obj)
                     new_node.modules_in_space = (current_node.modules_in_space).union(successors_id)
                     successors[str(successors_id)] = new_node
                     total_weight = 0
@@ -253,6 +258,7 @@ class Problem(Graph):
         new_node.launch_payload = launch_max_payload
         new_node.weight = 0
         new_node.path_cost = current_node.path_cost + launch_obj.launch_dict[list(launch_obj.launch_dict.keys())[0]].fixed_cost
+        new_node.launch_cost = self.launch_cost(new_node, launch_obj)
         new_node.modules_in_space = current_node.modules_in_space        
         successors['None'] = new_node
 
