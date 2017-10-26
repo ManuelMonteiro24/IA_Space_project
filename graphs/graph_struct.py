@@ -109,6 +109,7 @@ class Node():
         self.path_cost = 0
         self.modules_in_space = set()
         self.launch_cost = 0
+        self.launch_schedule = dict()
 
 
 class Problem(Graph):
@@ -246,6 +247,8 @@ class Problem(Graph):
                     new_node.path_cost = self.path_cost_calculator(current_node, new_node, launch_obj)
                     new_node.launch_cost = self.launch_cost(new_node, launch_obj)
                     new_node.modules_in_space = (current_node.modules_in_space).union(successors_id)
+                    new_node.launch_schedule = current_node.launch_schedule
+                    new_node.launch_schedule[new_node.modules_in_space] = launch_id
                     successors[str(successors_id)] = new_node
                     total_weight = 0
 
@@ -259,6 +262,7 @@ class Problem(Graph):
         new_node.weight = 0
         new_node.path_cost = current_node.path_cost + launch_obj.launch_dict[list(launch_obj.launch_dict.keys())[0]].fixed_cost
         new_node.launch_cost = self.launch_cost(new_node, launch_obj)
+        new_node.launch_schedule = current_node.launch_schedule
         new_node.modules_in_space = current_node.modules_in_space
         successors['None'] = new_node
 
