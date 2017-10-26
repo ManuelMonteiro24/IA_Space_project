@@ -75,9 +75,9 @@ class Graph:
     def find_path(self, start_vertex, end_vertex, path = []):
         path += [start_vertex]
         if start_vertex == end_vertex:
-            return path       
+            return path
         if start_vertex not in list(self.vertices.keys()) or end_vertex not in list(self.vertices.keys()):
-            return None       
+            return None
         for n in self.vertices[start_vertex].neighbors:
             if n not in path:
                 extended_path = self.find_path(n, end_vertex, path)
@@ -119,7 +119,7 @@ class Problem(Graph):
 
 
     def path_cost_calculator(self, current_node, new_node, launch_obj):
-        return current_node.path_cost + launch_obj.launch_dict[new_node.launch_id].fixed_cost + new_node.weight*(launch_obj.launch_dict[new_node.launch_id].variable_cost) 
+        return current_node.path_cost + launch_obj.launch_dict[new_node.launch_id].fixed_cost + new_node.weight*(launch_obj.launch_dict[new_node.launch_id].variable_cost)
 
 
     def launch_cost(self, new_node, launch_obj):
@@ -127,26 +127,26 @@ class Problem(Graph):
         return  new_node.launch_cost
 
     def goal_test(self, current_node):
-        if not (goal_state.intersection(current_node.modules_in_space)):
+        if not (self.goal_state.difference(current_node.modules_in_space)):
             print("\n Goal achieved!\n")
             return True
         else:
             return False
 
-    # Calculates total weight od the nodes on Earth and the sum of the launches'payloads 
+    # Calculates total weight od the nodes on Earth and the sum of the launches'payloads
     def weight_calculator(self, current_node, launch_obj):
         unlaunched_modules_weight = 0
         launches_weight = 0
         for i in (set(self.vertices).difference(current_node.modules_in_space)):
-            unlaunched_modules_weight += (self.vertices[i]).weight 
+            unlaunched_modules_weight += (self.vertices[i]).weight
         for i in set(launch_obj.launch_dict):
-            launches_weight += (launch_obj.launch_dict[i]).max_payload        
+            launches_weight += (launch_obj.launch_dict[i]).max_payload
         return unlaunched_modules_weight, launches_weight
 
 
-    def check_if_neighbor_in_space(self, combination): 
+    def check_if_neighbor_in_space(self, combination):
         for i in combination:
-            if i in self.neighbors_modules_in_space:                
+            if i in self.neighbors_modules_in_space:
                 yield True
 
 
@@ -165,7 +165,7 @@ class Problem(Graph):
             self.find_path(list(i)[0], list(i)[1], path)
             if len(path) > len(path_max):
                 path_max = path
-        
+
         for j in path_max:
             if (j not in list(combination)):
                 if current_node.modules_in_space and (j not in current_node.modules_in_space):
@@ -189,8 +189,8 @@ class Problem(Graph):
             for i in extra_modules:
                 if i not in neigh:
                     return False
-            return True  
-            
+            return True
+
         return True
 
 
@@ -199,8 +199,8 @@ class Problem(Graph):
         successors = dict()
         self.neighbors_modules_in_space = set()
 
-        for i in current_node.modules_in_space:            
-            self.neighbors_modules_in_space = self.neighbors_modules_in_space.union(set(self.vertices[i].neighbors))        
+        for i in current_node.modules_in_space:
+            self.neighbors_modules_in_space = self.neighbors_modules_in_space.union(set(self.vertices[i].neighbors))
         if not launch_obj.launch_dict:
             return False
 
@@ -224,21 +224,21 @@ class Problem(Graph):
                 #Checks if there is at least a module that is a neighbor of a module already in space, except for the first node with modules to be sent
                 if list(self.check_if_neighbor_in_space(x)) == [] and current_node.modules_in_space:
                     continue
-                
+
                 #Check if there is connection between modules
                 if self.modules_connected(current_node, x) == False and n>0:
                     continue
-                       
+
                 #Check if launch max. payload is enough to send the set of modules
                 for i in x:
-                    total_weight += self.vertices[i].weight              
+                    total_weight += self.vertices[i].weight
                     if total_weight > launch_max_payload:
                         total_weight = 0
                         count_breaks += 1
-                        break                    
-                    successors_id.add(self.vertices[i].id)     
-                
-                if total_weight != 0:                  
+                        break
+                    successors_id.add(self.vertices[i].id)
+
+                if total_weight != 0:
                     new_node = Node()
                     new_node.launch_id = list(launch_obj.launch_dict.keys())[0]
                     new_node.launch_payload = launch_max_payload
@@ -248,7 +248,7 @@ class Problem(Graph):
                     new_node.modules_in_space = (current_node.modules_in_space).union(successors_id)
                     successors[str(successors_id)] = new_node
                     total_weight = 0
-            
+
             #if for a combination of n modules there are no successors to add there won't be for combinations with higher than n modules (weight is greater)
             if count_breaks == count_comb:
                 break
@@ -259,9 +259,8 @@ class Problem(Graph):
         new_node.weight = 0
         new_node.path_cost = current_node.path_cost + launch_obj.launch_dict[list(launch_obj.launch_dict.keys())[0]].fixed_cost
         new_node.launch_cost = self.launch_cost(new_node, launch_obj)
-        new_node.modules_in_space = current_node.modules_in_space        
+        new_node.modules_in_space = current_node.modules_in_space
         successors['None'] = new_node
 
         del launch_obj.launch_dict[list(launch_obj.launch_dict.keys())[0]]
         return successors
-

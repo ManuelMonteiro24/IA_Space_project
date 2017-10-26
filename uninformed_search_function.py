@@ -1,14 +1,14 @@
 import strategy.stack
-import graphs.graph_struct
+from graphs.graph_struct import *
 
 def general_search(problem, strategy, launches):
 
 
     initial_node = Node()
-    strategy.add(initial_node.path_cost, initial_node)
+    strategy.put(initial_node, initial_node.path_cost)
     explored = set()
 
-    while:
+    while 1:
         if strategy.empty():
             return False
 
@@ -26,5 +26,5 @@ def general_search(problem, strategy, launches):
             for node in strategy.queue:
                 if node.modules_in_space == child_node.modules_in_space and child_node.path_cost <= node.path_cost :
                         strategy.queue.remove(node)
-                        strategy.add(child_node.path_cost, child_node)
+                        strategy.put(child_node, child_node.path_cost)
                         break

@@ -10,11 +10,3 @@ class Stack:
 
     def remove(self):
         return self.lifo.pop()
-
-
-def strategy(successors,struct):
-    min_path_cost = 0
-    key_for_min_path_node = ""
-
-    for key,value in successors.items():
-        struct.put(value.path_cost,successors[key])
