@@ -20,15 +20,15 @@ if inputdata == None:
 graph_obj = inputdata[0]
 print("Graph print: \n", graph_obj.toString())
 launch_obj = inputdata[1]
+launc_obj_output = launch_obj
 
 print(str(launch_obj))
 
 if sys.argv[1] == "-i":
 
-    stack_obj = strategy.stack.Stack()
-    #uninformed_search_function.general_search(,stack_obj) needs problem in arguments returns stack_obj
-
-    #receive output from function and send to generate_output_file function
+    strategy_obj = strategy.stack.PriorityQueue()
+    problem_obj = graphs.Problem(graph_obj.vertices)
+    uninformed_search_function.general_search(problem_obj,strategy_stack_obj, launch_obj)
 else:
     print("run uninformed search mode TODO...\n")
     #receive output from function and send to generate_output_file function

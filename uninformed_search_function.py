@@ -1,28 +1,30 @@
-import strategy
-import graphs
+import strategy.stack
+import graphs.graph_struct
 
-def general_search(problem,strategy):
+def general_search(problem, strategy, launches):
 
-    #set root node of tree
 
+    initial_node = Node()
+    strategy.add(initial_node.path_cost, initial_node)
+    explored = set()
 
     while:
+        if strategy.empty():
+            return False
 
+        node = strategy.get()
 
-        if: #no more expansion todo
-            return #failure
+        if problem.goal_test(node):
+            return node
+        explored.add(node.modules_in_space)
 
-        #choose next node through sucessor function
+        successors = problem.find_successor(launches, node)
 
-        if: #goal state achived (sucessor function == None) ????
-            return #correspondent goal path (solution)
+        for child_node in successors.values():
+            explored.add(child_node.modules_in_space)
 
-                for in: #this can be done inside a function in problem , to check ???
-
-                    #creates child nodes for the choosen node in sucessor function
-
-                    #update the paths cost for each incremented path (step_cost function)
-
-                    # add node to the structure
-
-        else:
+            for node in strategy.queue:
+                if node.modules_in_space == child_node.modules_in_space and child_node.path_cost <= node.path_cost :
+                        strategy.queue.remove(node)
+                        strategy.add(child_node.path_cost, child_node)
+                        break

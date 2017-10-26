@@ -18,9 +18,3 @@ def strategy(successors,struct):
 
     for key,value in successors.items():
         struct.put(value.path_cost,successors[key])
-
-#codigo da estrutura para exportar para outro lado
-
-struct = PriorityQueue()
-
-next_item = struct.get() #pass to successor function
