@@ -1,5 +1,5 @@
 import sys
-import strategy.stack
+from queue import PriorityQueue
 #import uninformed_search_function
 from graphs import graph_struct
 from graphs.graph_struct import Vertex
@@ -26,11 +26,11 @@ launc_obj_output = launch_obj
 
 print(str(launch_obj))
 
-if sys.argv[1] == "-i":
-
-    strategy_obj = strategy.stack.PriorityQueue()
+if sys.argv[1] == "-u":
+    strategy_obj = PriorityQueue()
     problem_obj = Problem(graph_obj.vertices)
-    general_search(problem_obj,strategy_obj, launch_obj)
-else:
-    print("run uninformed search mode TODO...\n")
-    #receive output from function and send to generate_output_file function
+    algorithm_result = general_search(problem_obj,strategy_obj, launch_obj)
+
+
+file_functions.generate_output(launc_obj_output.launch_dict, algorithm_result)
+sys.exit()

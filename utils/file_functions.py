@@ -56,12 +56,6 @@ class Launches:
 
         for key, value in self.launch_dict.items():
             return_str += " key-- " + str(key) + " value-- "+ str(value)
-
-        return_str += "\nLaunches list:"
-
-        for value in self.launch_list:
-            return_str += " " +str(value)
-
         return return_str
 
 def read_input_file(file_name):
@@ -116,10 +110,10 @@ def read_input_file(file_name):
 
 
 #needs adaptation
-def generate_output(launches,solved_launch):
+def generate_output(launches,solution_node):
     "Function that receives a list with the solved launch data and generates the proper output file"
 
-    if solved_launch == False:
+    if solution_node == False:
         print("0")
         return
 
@@ -127,17 +121,9 @@ def generate_output(launches,solved_launch):
 
     cost_sum = 0
 
-    sorted_x = sorted(solved_launch, key=operator.attrgetter('score'))
-
-    for node in sorted(solved_launch.values(), key=operator.attrgetter('launch_id')):
-        aux_str = launches.launch_dict[node.launch_id].date
-
-        for module in node.modules_in_space:
-            aux_str += " " + module + " "
-
-        aux_str += " " + node.launch_cost
-        cost_sum += node.launch_cost
-        print(aux_str)
+    for key, value in solution_node.launch_schedule.items:
+        print(("%s  %s  %s") % (launches[value.id].date,key,value.weight))
+        cost_sum += value.weight
 
     print(cost_sum)
     return

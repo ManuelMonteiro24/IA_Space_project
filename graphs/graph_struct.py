@@ -248,10 +248,10 @@ class Problem(Graph):
                     new_node.launch_cost = self.launch_cost(new_node, launch_obj)
                     new_node.modules_in_space = (current_node.modules_in_space).union(successors_id)
                     new_node.launch_schedule = current_node.launch_schedule
-                    new_node.launch_schedule[new_node.modules_in_space] = launch_id
+                    new_node.launch_schedule[str(new_node.modules_in_space)] = new_node
                     successors[str(successors_id)] = new_node
                     total_weight = 0
-
+                    print("Combination: ", x, new_node.path_cost)
             #if for a combination of n modules there are no successors to add there won't be for combinations with higher than n modules (weight is greater)
             if count_breaks == count_comb:
                 break
@@ -260,11 +260,12 @@ class Problem(Graph):
         new_node.launch_id = list(launch_obj.launch_dict.keys())[0]
         new_node.launch_payload = launch_max_payload
         new_node.weight = 0
-        new_node.path_cost = current_node.path_cost + launch_obj.launch_dict[list(launch_obj.launch_dict.keys())[0]].fixed_cost
+        new_node.path_cost = self.path_cost_calculator(current_node, new_node, launch_obj)
         new_node.launch_cost = self.launch_cost(new_node, launch_obj)
         new_node.launch_schedule = current_node.launch_schedule
         new_node.modules_in_space = current_node.modules_in_space
         successors['None'] = new_node
+        print("None ", successors['None'].path_cost)
 
         del launch_obj.launch_dict[list(launch_obj.launch_dict.keys())[0]]
         return successors
