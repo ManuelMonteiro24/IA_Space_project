@@ -1,4 +1,5 @@
 import sys
+import copy
 from queue import PriorityQueue
 #import uninformed_search_function
 from graphs import graph_struct
@@ -22,7 +23,7 @@ if inputdata == None:
 graph_obj = inputdata[0]
 print("Graph print: \n", graph_obj.toString())
 launch_obj = inputdata[1]
-launc_obj_output = launch_obj
+launc_obj_output = copy.deepcopy(launch_obj)
 
 print(str(launch_obj))
 

@@ -2,7 +2,6 @@ from datetime import *
 from graphs import graph_struct
 import operator
 
-
 class Launch:
 
     def __init__(self, date, max_payload, fixed_cost, variable_cost):
@@ -121,9 +120,10 @@ def generate_output(launches,solution_node):
 
     cost_sum = 0
 
-    for key, value in solution_node.launch_schedule.items:
-        print(("%s  %s  %s") % (launches[value.id].date,key,value.weight))
-        cost_sum += value.weight
+    for key, value in solution_node.launch_schedule.items():
+        if value.launch_id != 0:
+            print(launches[value.launch_id].date, " ", key, " ",  str(value.weight))
+            cost_sum += value.weight
 
     print(cost_sum)
     return

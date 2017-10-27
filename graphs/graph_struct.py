@@ -111,6 +111,15 @@ class Node():
         self.launch_cost = 0
         self.launch_schedule = dict()
 
+     def __lt__(self, other):
+        return self.path_cost < other.path_cost
+
+     def __cmp__(self, other):
+        return cmp(self.path_cost, other.path_cost)
+
+     def __str__(self):
+        return "l_id: %d l_pay: %f wei: %f path_cost: %f" % (self.launch_id, self.launch_payload, self.weight, self.path_cost)
+
 
 class Problem(Graph):
     def __init__(self, vertices_input):
@@ -251,7 +260,6 @@ class Problem(Graph):
                     new_node.launch_schedule[str(new_node.modules_in_space)] = new_node
                     successors[str(successors_id)] = new_node
                     total_weight = 0
-                    print("Combination: ", x, new_node.path_cost)
             #if for a combination of n modules there are no successors to add there won't be for combinations with higher than n modules (weight is greater)
             if count_breaks == count_comb:
                 break
@@ -265,7 +273,6 @@ class Problem(Graph):
         new_node.launch_schedule = current_node.launch_schedule
         new_node.modules_in_space = current_node.modules_in_space
         successors['None'] = new_node
-        print("None ", successors['None'].path_cost)
 
         del launch_obj.launch_dict[list(launch_obj.launch_dict.keys())[0]]
         return successors
