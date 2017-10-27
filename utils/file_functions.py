@@ -122,8 +122,19 @@ def generate_output(launches,solution_node):
 
     for key, value in solution_node.launch_schedule.items():
         if value.launch_id != 0:
-            print(launches[value.launch_id].date, " ", key, " ",  str(value.weight))
+            print(launches[value.launch_id].date, " ", print_modules(key), " ",  str(value.weight))
             cost_sum += value.weight
 
     print(cost_sum)
     return
+
+def print_modules(modules_string):
+
+    return_str = ""
+
+    return_str = modules_string.replace("'", "")
+    return_str = return_str.replace(",", "")
+    return_str = return_str.replace("{", "")
+    return_str = return_str.replace("}", "")
+
+    return return_str
