@@ -129,11 +129,17 @@ class Problem(Graph):
 
 
     def path_cost_calculator(self, current_node, new_node, launch_obj):
-        return current_node.path_cost + launch_obj.launch_dict[new_node.launch_id].fixed_cost + new_node.weight*(launch_obj.launch_dict[new_node.launch_id].variable_cost)
+        if new_node.launch_id == 0:
+            return current_node.path_cost + launch_obj.launch_dict[1].fixed_cost
+        else:
+            return (current_node.path_cost + launch_obj.launch_dict[new_node.launch_id].fixed_cost + new_node.weight*(launch_obj.launch_dict[new_node.launch_id].variable_cost))
 
 
     def launch_cost(self, new_node, launch_obj):
-        new_node.launch_cost = launch_obj.launch_dict[new_node.launch_id].fixed_cost + new_node.weight*(launch_obj.launch_dict[new_node.launch_id].variable_cost)
+        if new_node.launch_id == 0:
+            new_node.launch_cost = launch_obj.launch_dict[1].fixed_cost
+        else:
+            new_node.launch_cost = launch_obj.launch_dict[new_node.launch_id].fixed_cost + new_node.weight*(launch_obj.launch_dict[new_node.launch_id].variable_cost)
         return  new_node.launch_cost
 
     def goal_test(self, current_node):
@@ -149,8 +155,11 @@ class Problem(Graph):
         launches_weight = 0
         for i in (set(self.vertices).difference(current_node.modules_in_space)):
             unlaunched_modules_weight += (self.vertices[i]).weight
-        for i in set(launch_obj.launch_dict):
-            launches_weight += (launch_obj.launch_dict[i]).max_payload
+
+        for key in set(launch_obj.launch_dict):
+            if key > current_node.launch_id:
+                launches_weight += (launch_obj.launch_dict[key]).max_payload
+
         return unlaunched_modules_weight, launches_weight
 
 
@@ -209,7 +218,12 @@ class Problem(Graph):
         modules_on_earth = set(self.vertices).difference(current_node.modules_in_space)
         print("\n----------- NEW SUCCESSORS -----------\n")
         print("Modules on earth: ", modules_on_earth)
-        print("Launch object ", launch_obj, "\n")
+
+        print("Launches available")
+        for key in launch_obj.launch_dict.keys():
+            if key > current_node.launch_id:
+                print("\tLaunch ", key, ": ", launch_obj.launch_dict[key])
+
         successors = dict()
         self.neighbors_modules_in_space = set()
 
@@ -224,7 +238,7 @@ class Problem(Graph):
         if launches_weight < unlaunched_modules_weight:
             return False
 
-        launch_max_payload = launch_obj.launch_dict[list(launch_obj.launch_dict.keys())[0]].max_payload
+        launch_max_payload = launch_obj.launch_dict[current_node.launch_id+1].max_payload
 
         for n in range(len(modules_on_earth)):
             total_weight = 0
@@ -255,7 +269,7 @@ class Problem(Graph):
                 if total_weight != 0:
                     count_successors += 1 
                     new_node = Node()
-                    new_node.launch_id = list(launch_obj.launch_dict.keys())[0]
+                    new_node.launch_id = current_node.launch_id + 1
                     new_node.launch_payload = launch_max_payload
                     new_node.weight = total_weight
                     new_node.path_cost = self.path_cost_calculator(current_node, new_node, launch_obj)
@@ -272,11 +286,11 @@ class Problem(Graph):
 
         count_successors += 1 
         new_node = Node()
-        new_node.launch_id = list(launch_obj.launch_dict.keys())[0]
+        new_node.launch_id = current_node.launch_id
         new_node.launch_payload = launch_max_payload
         new_node.weight = 0
         new_node.path_cost = self.path_cost_calculator(current_node, new_node, launch_obj)
-        new_node.launch_cost = self.launch_cost(new_node, launch_obj)
+        new_node.launch_cost = 0
         new_node.launch_schedule = current_node.launch_schedule
         new_node.modules_in_space = current_node.modules_in_space
         successors[frozenset(new_node.modules_in_space)] = new_node

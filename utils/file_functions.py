@@ -34,7 +34,7 @@ class Launches:
         for x in self.launch_list:
             launch_date_to_compar = date(int(x.date[4:]),int(x.date[2:4]),int(x.date[:2]))
             if launch_date_to_insert <= launch_date_to_compar:
-                launch_list.insert(aux_index,launch)
+                self.launch_list.insert(aux_index,launch)
                 return
             aux_index = aux_index + 1
 
@@ -121,20 +121,9 @@ def generate_output(launches,solution_node):
     cost_sum = 0
 
     for key, value in solution_node.launch_schedule.items():
-        if value.launch_id != 0:
-            print(launches[value.launch_id].date, " ", print_modules(key), " ",  str(value.weight))
-            cost_sum += value.weight
+        if value.weight != 0:
+            print(launches[value.launch_id].date, " ", key, " ",  str(value.weight))
+            cost_sum += value.launch_cost
 
     print(cost_sum)
     return
-
-def print_modules(modules_string):
-
-    return_str = ""
-
-    return_str = modules_string.replace("'", "")
-    return_str = return_str.replace(",", "")
-    return_str = return_str.replace("{", "")
-    return_str = return_str.replace("}", "")
-
-    return return_str

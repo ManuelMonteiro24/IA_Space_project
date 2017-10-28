@@ -32,13 +32,11 @@ def general_search(problem, frontier, launches):
             print("false empty")
             return False
 
+        print("Frontier ", frontier.queue)
         first_el = frontier.get()
-
-        if first_el[1].weight != 0:
-            del launches.launch_dict[list(launches.launch_dict.keys())[0]]
     
         if problem.goal_test(first_el[1]):
-            return first_el[1].launch_schedule
+            return first_el[1]
 
         print("\n", first_el[1].modules_in_space, "not a goal\n")
         explored.add(frozenset(first_el[1].modules_in_space))
@@ -46,16 +44,27 @@ def general_search(problem, frontier, launches):
 
         successors = problem.find_successor(launches, first_el[1])
 
-        for node in list(successors.values()):
-            print("Node: ", node)
-            in_frontier = in_PriorityQueue(frontier, node)
-            print("\tIn frontier: ", in_frontier)
-            print("\tIn explored: ", frozenset(node.modules_in_space) in explored)
+        if successors:
+            for node in list(successors.values()):
+                print("Node: ", node)
+                in_frontier = in_PriorityQueue(frontier, node)
+                print("\tIn frontier: ", in_frontier)
+                print("\tIn explored: ", frozenset(node.modules_in_space) in explored)
+
+                if frozenset(node.modules_in_space) not in explored:
+                    if in_frontier == False:
+                        print("\tA")
+                        frontier.put((node.path_cost, node))
+                    else: 
+                        print("\tB")
+                        update_PriorityQueue(frontier, node)
+
+                else:
+                    if in_frontier == False:
+                        print("\tC")
+                        frontier.put((node.path_cost, node)) 
+                    else:
+                        print("\tD")
+                        update_PriorityQueue(frontier, node)
+
             
-            if frozenset(node.modules_in_space) not in explored or in_frontier == False:
-                print("\tA")
-                frontier.put((node.path_cost, node))
-            else:
-                if in_frontier:
-                    print("\tB")
-                    update_PriorityQueue(frontier, node)
