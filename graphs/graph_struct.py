@@ -236,7 +236,10 @@ class Problem(Graph):
 
         #Check if launches available are enough to send the modules on Earth
         if launches_weight < unlaunched_modules_weight:
-            return False
+            if current_node.launch_id > 1:
+                return None
+            else:
+                return False
 
         launch_max_payload = launch_obj.launch_dict[current_node.launch_id+1].max_payload
 
