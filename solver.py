@@ -32,6 +32,6 @@ if sys.argv[1] == "-u":
     problem_obj = Problem(graph_obj.vertices)
     algorithm_result = general_search(problem_obj,strategy_obj, launch_obj)
 
-
-file_functions.generate_output(launc_obj_output.launch_dict, algorithm_result)
+initial_node = Node()
+file_functions.generate_output(launc_obj_output.launch_dict, algorithm_result, initial_node)
 sys.exit()

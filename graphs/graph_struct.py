@@ -8,6 +8,7 @@ class Vertex:
         self.weight=weight
 
     def add_neighbor(self, neighbor):
+        print("A")
         if isinstance(neighbor, Vertex):
             if neighbor.id not in self.neighbors:
                 self.neighbors.append(neighbor.id)
@@ -63,6 +64,7 @@ class Graph:
 
 
     def add_edge(self, vertex_1_id, vertex_2_id):
+        print(vertex_1_id, vertex_2_id)
         if self.get_vertex(vertex_1_id) != None:
             self.add_vertex(vertex_1_id)
         if self.get_vertex(vertex_2_id) != None:
@@ -107,9 +109,10 @@ class Node():
         self.launch_payload = -1
         self.weight = 0
         self.path_cost = 0
-        self.modules_in_space = set()
+        self.modules_in_space = []
         self.launch_cost = 0
-        self.launch_schedule = dict()
+        self.launched = set()
+        self.ancestor = None
 
     def __lt__(self, other):
         return self.path_cost < other.path_cost
@@ -129,21 +132,15 @@ class Problem(Graph):
 
 
     def path_cost_calculator(self, current_node, new_node, launch_obj):
-        if new_node.launch_id == 0:
-            return current_node.path_cost + launch_obj.launch_dict[1].fixed_cost
-        else:
-            return (current_node.path_cost + launch_obj.launch_dict[new_node.launch_id].fixed_cost + new_node.weight*(launch_obj.launch_dict[new_node.launch_id].variable_cost))
+        return (current_node.path_cost + launch_obj.launch_dict[new_node.launch_id].fixed_cost + new_node.weight*(launch_obj.launch_dict[new_node.launch_id].variable_cost))
 
 
     def launch_cost(self, new_node, launch_obj):
-        if new_node.launch_id == 0:
-            new_node.launch_cost = launch_obj.launch_dict[1].fixed_cost
-        else:
-            new_node.launch_cost = launch_obj.launch_dict[new_node.launch_id].fixed_cost + new_node.weight*(launch_obj.launch_dict[new_node.launch_id].variable_cost)
+        new_node.launch_cost = launch_obj.launch_dict[new_node.launch_id].fixed_cost + new_node.weight*(launch_obj.launch_dict[new_node.launch_id].variable_cost)
         return  new_node.launch_cost
 
     def goal_test(self, current_node):
-        if not (self.goal_state.difference(current_node.modules_in_space)):
+        if not self.goal_state.difference(set(current_node.modules_in_space)):
             print("\n Goal achieved!\n")
             return True
         else:
@@ -153,12 +150,15 @@ class Problem(Graph):
     def weight_calculator(self, current_node, launch_obj):
         unlaunched_modules_weight = 0
         launches_weight = 0
-        for i in (set(self.vertices).difference(current_node.modules_in_space)):
+        for i in set(self.vertices).difference(set(current_node.modules_in_space)):
             unlaunched_modules_weight += (self.vertices[i]).weight
 
         for key in set(launch_obj.launch_dict):
             if key > current_node.launch_id:
                 launches_weight += (launch_obj.launch_dict[key]).max_payload
+
+        if current_node.weight == 0 and current_node.launch_id != 0:
+            launches_weight += launch_obj.launch_dict[current_node.launch_id].max_payload
 
         return unlaunched_modules_weight, launches_weight
 
@@ -215,15 +215,16 @@ class Problem(Graph):
 
     def find_successor(self, launch_obj, current_node):
         count_successors = 0
-        modules_on_earth = set(self.vertices).difference(current_node.modules_in_space)
-        print("\n----------- NEW SUCCESSORS -----------\n")
-        print("Modules on earth: ", modules_on_earth)
-
-        print("Launches available")
+        modules_on_earth = set(self.vertices).difference(set(current_node.modules_in_space))
+        #print("\n----------- NEW SUCCESSORS -----------\n")
+        #print("Modules on earth: ", modules_on_earth)
+        #print("Modules in space ", current_node.modules_in_space)
+        #print("Launches available")
+        '''
         for key in launch_obj.launch_dict.keys():
             if key > current_node.launch_id:
                 print("\tLaunch ", key, ": ", launch_obj.launch_dict[key])
-
+        '''
         successors = dict()
         self.neighbors_modules_in_space = set()
 
@@ -236,10 +237,13 @@ class Problem(Graph):
 
         #Check if launches available are enough to send the modules on Earth
         if launches_weight < unlaunched_modules_weight:
-            if current_node.launch_id > 1:
+            if current_node.launch_id > 0:
                 return None
             else:
                 return False
+
+        if current_node.launch_id == len(list(launch_obj.launch_dict)):
+            return None
 
         launch_max_payload = launch_obj.launch_dict[current_node.launch_id+1].max_payload
 
@@ -277,9 +281,9 @@ class Problem(Graph):
                     new_node.weight = total_weight
                     new_node.path_cost = self.path_cost_calculator(current_node, new_node, launch_obj)
                     new_node.launch_cost = self.launch_cost(new_node, launch_obj)
-                    new_node.modules_in_space = (current_node.modules_in_space).union(successors_id)
-                    new_node.launch_schedule = current_node.launch_schedule
-                    new_node.launch_schedule[str(new_node.modules_in_space)] = new_node
+                    new_node.launched = successors_id
+                    new_node.ancestor = current_node
+                    new_node.modules_in_space = current_node.modules_in_space + list(successors_id)
                     successors[frozenset(new_node.modules_in_space)] = new_node
                     total_weight = 0
 
@@ -289,12 +293,12 @@ class Problem(Graph):
 
         count_successors += 1 
         new_node = Node()
-        new_node.launch_id = current_node.launch_id
+        new_node.launch_id = current_node.launch_id + 1 
         new_node.launch_payload = launch_max_payload
         new_node.weight = 0
         new_node.path_cost = self.path_cost_calculator(current_node, new_node, launch_obj)
         new_node.launch_cost = 0
-        new_node.launch_schedule = current_node.launch_schedule
+        new_node.ancestor = current_node
         new_node.modules_in_space = current_node.modules_in_space
         successors[frozenset(new_node.modules_in_space)] = new_node
         

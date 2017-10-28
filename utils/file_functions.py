@@ -109,21 +109,29 @@ def read_input_file(file_name):
 
 
 #needs adaptation
-def generate_output(launches,solution_node):
+def generate_output(launches,solution_node, initial_node):
     "Function that receives a list with the solved launch data and generates the proper output file"
 
     if solution_node == False:
         print("0")
         return
 
-    aux_str = ""
-
     cost_sum = 0
+    aux_node = solution_node
 
+    while (aux_node != initial_node):
+        if aux_node.weight != 0 or aux_node != None:
+            print(launches[aux_node.launch_id].date, " ", aux_node.launched, " ",  aux_node.launch_cost)
+            cost_sum += aux_node.launch_cost 
+        
+        aux_node = aux_node.ancestor
+
+    '''
     for key, value in solution_node.launch_schedule.items():
         if value.weight != 0:
-            print(launches[value.launch_id].date, " ", key, " ",  str(value.weight))
+            print(launches[value.launch_id].date, " ", key, " ",  str(value.launch_cost))
             cost_sum += value.launch_cost
-
+    '''
     print(cost_sum)
+    print(solution_node.path_cost)
     return
