@@ -102,25 +102,25 @@ class Graph:
 
 
 class Node():
-     def __init__(self):
+    def __init__(self):
         self.launch_id = 0
         self.launch_payload = -1
-        self.weight = -1
+        self.weight = 0
         self.path_cost = 0
         self.modules_in_space = set()
         self.launch_cost = 0
         self.launch_schedule = dict()
 
-     def __lt__(self, other):
+    def __lt__(self, other):
         return self.path_cost < other.path_cost
 
-     def __cmp__(self, other):
+    def __cmp__(self, other):
         return cmp(self.path_cost, other.path_cost)
 
-     def __str__(self):
-        return "l_id: %d l_pay: %f wei: %f path_cost: %f" % (self.launch_id, self.launch_payload, self.weight, self.path_cost)
+    def __str__(self):
+        return "l_id: %d l_pay: %f wei: %f path_cost: %f modules in space: %s" % (self.launch_id, self.launch_payload, self.weight, self.path_cost, str(self.modules_in_space))
 
-
+    
 class Problem(Graph):
     def __init__(self, vertices_input):
         self.goal_state = set(vertices_input)
@@ -205,7 +205,11 @@ class Problem(Graph):
 
 
     def find_successor(self, launch_obj, current_node):
+        count_successors = 0
         modules_on_earth = set(self.vertices).difference(current_node.modules_in_space)
+        print("\n----------- NEW SUCCESSORS -----------\n")
+        print("Modules on earth: ", modules_on_earth)
+        print("Launch object ", launch_obj, "\n")
         successors = dict()
         self.neighbors_modules_in_space = set()
 
@@ -249,6 +253,7 @@ class Problem(Graph):
                     successors_id.add(self.vertices[i].id)
 
                 if total_weight != 0:
+                    count_successors += 1 
                     new_node = Node()
                     new_node.launch_id = list(launch_obj.launch_dict.keys())[0]
                     new_node.launch_payload = launch_max_payload
@@ -258,12 +263,14 @@ class Problem(Graph):
                     new_node.modules_in_space = (current_node.modules_in_space).union(successors_id)
                     new_node.launch_schedule = current_node.launch_schedule
                     new_node.launch_schedule[str(new_node.modules_in_space)] = new_node
-                    successors[str(successors_id)] = new_node
+                    successors[frozenset(new_node.modules_in_space)] = new_node
                     total_weight = 0
+
             #if for a combination of n modules there are no successors to add there won't be for combinations with higher than n modules (weight is greater)
             if count_breaks == count_comb:
                 break
 
+        count_successors += 1 
         new_node = Node()
         new_node.launch_id = list(launch_obj.launch_dict.keys())[0]
         new_node.launch_payload = launch_max_payload
@@ -272,7 +279,6 @@ class Problem(Graph):
         new_node.launch_cost = self.launch_cost(new_node, launch_obj)
         new_node.launch_schedule = current_node.launch_schedule
         new_node.modules_in_space = current_node.modules_in_space
-        successors['None'] = new_node
-
-        del launch_obj.launch_dict[list(launch_obj.launch_dict.keys())[0]]
+        successors[frozenset(new_node.modules_in_space)] = new_node
+        
         return successors
