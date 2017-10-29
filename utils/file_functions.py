@@ -1,3 +1,6 @@
+
+"""Provides functions for read from file, print output solution"""
+
 import operator, utils.launch, graphs.graph_struct
 
 def read_input_file(file_name):
@@ -64,7 +67,7 @@ def generate_output(launches,solution_node):
     cost_sum = 0
     aux_node = solution_node
 
-    while (aux_node != None):
+    while (aux_node.ancestor != None):
         if aux_node.weight != 0 or aux_node != None:
             print(launches[aux_node.launch_id].date, " ", print_modules(aux_node.launched), " ",  aux_node.launch_cost)
             cost_sum += aux_node.launch_cost
@@ -81,6 +84,7 @@ def generate_output(launches,solution_node):
     return
 
 def print_modules(modules_string):
+    """ Function that receives the modules in a set string format and returns it in the desired output format """
     return_str = ""
 
     for x in modules_string:

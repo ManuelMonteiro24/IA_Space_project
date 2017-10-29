@@ -34,12 +34,6 @@ def general_search(problem, frontier, launches):
             for child_node in successors.values():
                 if frozenset(child_node.modules_in_space) not in explored:
                     frontier.append(child_node)
-                elif child_node in frontier:
-                    test_node = frontier.get(child_node)
-                    if child_node < test_node:
-                        frontier.delete(test_node)
-                        frontier.append(child_node)
-
     elapsed_time = process_time() - t
     print("Iteration Count :", iteration_count, "Time taken: ", elapsed_time)
     return False

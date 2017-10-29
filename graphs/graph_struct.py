@@ -257,11 +257,12 @@ class Problem(Graph):
         for n in range(len(modules_on_earth)):
             count_comb = 0
             count_breaks = 0
+            total_weight = 0
 
             for x in combinations(modules_on_earth, n+1):
                 count_comb += 1
                 successors_id = set()
-                total_weight = 0
+
 
                 #Checks if there is at least a module that is a neighbor of a module already in space, except for the first node with modules to be sent
                 if current_node.modules_in_space and list(self.check_if_neighbor_in_space(x)) == []:
