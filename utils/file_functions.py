@@ -1,10 +1,10 @@
-import operator, launch, graph.graph_struct
+import operator, utils.launch, graphs.graph_struct
 
 def read_input_file(file_name):
     "Function that receives the name of file to read, proccess the data in it to a graph structure (composed by the modules and their connections) and a Launch structure both this structures are returned in the end of function. In case of error on opening the file the function returns None"
 
-    graph_obj = graph.graph_struct.Graph();
-    obj_launches = launch.Launches()
+    graph_obj = graphs.graph_struct.Graph();
+    obj_launches = utils.launch.Launches()
 
     try:
         with open(file_name, "r") as input_file:
@@ -39,7 +39,7 @@ def read_input_file(file_name):
                         continue
 
                     #valid launch line (still need to check date validity, this is done on the insertion on the Launches list)
-                    launch_obj = launch.Launch(splitted_line[1],float(splitted_line[2]),float(splitted_line[3]),float(splitted_line[4]))
+                    launch_obj = utils.launch.Launch(splitted_line[1],float(splitted_line[2]),float(splitted_line[3]),float(splitted_line[4]))
                     obj_launches.ordered_insertion_on_list(launch_obj)
                 else:
                     continue

@@ -1,4 +1,4 @@
-from strategy.Queue_data import Queue, PriorityQueue
+from strategy.queue_data import Queue, PriorityQueue
 from graphs.graph_struct import *
 
 def general_search(problem, frontier, launches):

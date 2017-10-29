@@ -24,7 +24,7 @@ class Launches:
 
         #check if the date on the launch object is in a valid format
         try:
-            launch_date_to_insert = datetime.date(launch.date[4:],launch.date[2:4],launch.date[:2])
+            launch_date_to_insert = datetime.date(int(launch.date[4:]),int(launch.date[2:4]),int(launch.date[:2]))
         except:
             return
 
@@ -36,7 +36,7 @@ class Launches:
 
         #ordered insertion o self.launch_list by date of launch
         for x in self.launch_list:
-            launch_date_to_compar = datetime.date(x.date[4:],x.date[2:4],x.date[:2])
+            launch_date_to_compar = datetime.date(int(x.date[4:]),int(x.date[2:4]),int(x.date[:2]))
             if launch_date_to_insert <= launch_date_to_compar:
                 self.launch_list.insert(iteration_count,launch)
                 return
