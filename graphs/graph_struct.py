@@ -95,7 +95,7 @@ class Graph:
             return dict()
 
 
-    def __str__(self):
+    def toString(self):
         """ Function to print a graph as adjacency list and adjacency matrix. """
         return str(self.adjacencyList())# + '\n' + '\n' + str(self.adjacencyMatrix())
 
@@ -121,7 +121,7 @@ class Node():
     def __str__(self):
         return "l_id: %d l_pay: %f wei: %f path_cost: %f modules in space: %s" % (self.launch_id, self.launch_payload, self.weight, self.path_cost, str(self.modules_in_space))
 
-
+    
 class Problem(Graph):
     def __init__(self, vertices_input):
         self.goal_state = set(vertices_input)
@@ -212,7 +212,7 @@ class Problem(Graph):
             extra_modules = set(path_max) - set(combination)
             for i in extra_modules:
                 if i not in current_node.modules_in_space:
-                    return False
+                    return False                
             return True
 
         return False
@@ -226,7 +226,7 @@ class Problem(Graph):
         print("Modules on earth: ", modules_on_earth)
         print("Modules in space ", current_node.modules_in_space)
         print("Launches available")
-
+        
         for key in launch_obj.launch_dict.keys():
             if key > current_node.launch_id:
                 print("\tLaunch ", key, ": ", launch_obj.launch_dict[key])
@@ -236,6 +236,7 @@ class Problem(Graph):
 
         for i in current_node.modules_in_space:
             self.neighbors_modules_in_space = self.neighbors_modules_in_space.union(set(self.vertices[i].neighbors))
+        
         if not launch_obj.launch_dict:
             return False
 
@@ -248,19 +249,19 @@ class Problem(Graph):
             else:
                 return False
 
-        if current_node.launch_id == len(list(launch_obj.launch_dict)):
+        if current_node.launch_id == list(launch_obj.launch_dict.keys())[-1]:
             return None
 
         launch_max_payload = launch_obj.launch_dict[current_node.launch_id+1].max_payload
 
-        for n in range(len(modules_on_earth)):
+        for n in range(len(modules_on_earth)):            
             count_comb = 0
             count_breaks = 0
 
             for x in combinations(modules_on_earth, n+1):
                 count_comb += 1
-                total_weight = 0
                 successors_id = set()
+                total_weight = 0
 
                 #Checks if there is at least a module that is a neighbor of a module already in space, except for the first node with modules to be sent
                 if current_node.modules_in_space and list(self.check_if_neighbor_in_space(x)) == []:
@@ -280,7 +281,7 @@ class Problem(Graph):
                     successors_id.add(self.vertices[i].id)
 
                 if total_weight != 0:
-                    count_successors += 1
+                    count_successors += 1 
                     new_node = Node()
                     new_node.launch_id = current_node.launch_id + 1
                     new_node.launch_payload = launch_max_payload
@@ -290,22 +291,22 @@ class Problem(Graph):
                     new_node.launched = successors_id
                     new_node.ancestor = current_node
                     new_node.modules_in_space = current_node.modules_in_space + list(successors_id)
-                    successors[frozenset(successors_id)] = new_node
+                    successors[frozenset(new_node.modules_in_space)] = new_node
                     total_weight = 0
 
             #if for a combination of n modules there are no successors to add there won't be for combinations with higher than n modules (weight is greater)
             if count_breaks == count_comb:
                 break
 
-        count_successors += 1
+        count_successors += 1 
         new_node = Node()
-        new_node.launch_id = current_node.launch_id + 1
+        new_node.launch_id = current_node.launch_id + 1 
         new_node.launch_payload = launch_max_payload
         new_node.weight = 0
         new_node.path_cost = self.path_cost_calculator(current_node, new_node, launch_obj)
         new_node.launch_cost = 0
         new_node.ancestor = current_node
         new_node.modules_in_space = current_node.modules_in_space
-        successors[frozenset(set())] = new_node
-
+        successors[frozenset(new_node.modules_in_space)] = new_node
+        
         return successors
