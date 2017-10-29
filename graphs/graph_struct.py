@@ -65,13 +65,12 @@ class Graph:
 
     def add_edge(self, vertex_1_id, vertex_2_id):
         print(vertex_1_id, vertex_2_id)
-        if self.get_vertex(vertex_1_id) != None:
+        if self.get_vertex(vertex_1_id) == None:
             self.add_vertex(vertex_1_id)
-        if self.get_vertex(vertex_2_id) != None:
+        if self.get_vertex(vertex_2_id) == None:
             self.add_vertex(vertex_2_id)
 
         self.vertices[vertex_1_id].add_neighbor(self.vertices[vertex_2_id])
-        self.vertices[vertex_2_id].add_neighbor(self.vertices[vertex_1_id])
 
 
     def find_path(self, start_vertex, end_vertex, path = []):
@@ -123,7 +122,7 @@ class Node():
     def __str__(self):
         return "l_id: %d l_pay: %f wei: %f path_cost: %f modules in space: %s" % (self.launch_id, self.launch_payload, self.weight, self.path_cost, str(self.modules_in_space))
 
-    
+
 class Problem(Graph):
     def __init__(self, vertices_input):
         self.goal_state = set(vertices_input)
@@ -274,7 +273,7 @@ class Problem(Graph):
                     successors_id.add(self.vertices[i].id)
 
                 if total_weight != 0:
-                    count_successors += 1 
+                    count_successors += 1
                     new_node = Node()
                     new_node.launch_id = current_node.launch_id + 1
                     new_node.launch_payload = launch_max_payload
@@ -291,9 +290,9 @@ class Problem(Graph):
             if count_breaks == count_comb:
                 break
 
-        count_successors += 1 
+        count_successors += 1
         new_node = Node()
-        new_node.launch_id = current_node.launch_id + 1 
+        new_node.launch_id = current_node.launch_id + 1
         new_node.launch_payload = launch_max_payload
         new_node.weight = 0
         new_node.path_cost = self.path_cost_calculator(current_node, new_node, launch_obj)
@@ -301,5 +300,5 @@ class Problem(Graph):
         new_node.ancestor = current_node
         new_node.modules_in_space = current_node.modules_in_space
         successors[frozenset(new_node.modules_in_space)] = new_node
-        
+
         return successors
