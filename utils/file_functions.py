@@ -74,12 +74,6 @@ def generate_output(launches,solution_node):
 
         aux_node = aux_node.ancestor
 
-    '''
-    for key, value in solution_node.launch_schedule.items():
-        if value.weight != 0 or value != None:
-            print(launches[value.launch_id].date, " ", key, " ",  str(value.launch_cost))
-            cost_sum += value.launch_cost
-    '''
     print(cost_sum)
     return
 
