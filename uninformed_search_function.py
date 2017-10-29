@@ -1,40 +1,38 @@
-import strategy.stack
-from queue import PriorityQueue
+from strategy.modified_Queue import MyPriorityQueue
 from graphs.graph_struct import *
 
-def general_search(problem, strategy, launches):
+def general_search(problem, frontier, launches):
+    "Function uniform cost general search algorithm implementation"
 
     initial_node = Node()
-    strategy.put(initial_node)
+    frontier.add_node(initial_node)
     explored = set()
 
     while 1:
-        if strategy.empty():
+        if not frontier.list:
             print("false empty")
             return False
 
-        node = strategy.get()
+        first_node = frontier.get_node()
 
-        if problem.goal_test(node):
-            return node
-        explored.add(frozenset(node.modules_in_space))
+        if problem.goal_test(first_node):
+            print("Goal achieved!")
+            return first_node
 
-        successors = problem.find_successor(launches, node)
+        explored.add(frozenset(first_node.modules_in_space))
 
-        if successors == False:
-            print("false successors")
-            return False
-        else:
-            for child_node in successors.values():
-                if frozenset(child_node.modules_in_space) not in explored:
-                    strategy.put(child_node)
+        successors = problem.find_successor(launches, first_node)
+
+        if successors != None and successors != False:
+            for node in list(successors.values()):
+                if frozenset(node.modules_in_space) not in explored:
+                    if frontier.search(node) == True:
+                        frontier.update(node)
+                    else:
+                        frontier.add_node(node)
                 else:
-                    aux_strategy = PriorityQueue()
-                    while strategy.empty() != True:
-                        node = strategy.get()
-                        if (node.modules_in_space == child_node.modules_in_space) and (child_node.path_cost <= node.path_cost) :
-                            aux_strategy.put(child_node)
-                        else:
-                            aux_strategy.put(node)
-                            break
-                    strategy = aux_strategy
+                    if frontier.search(node) == False:
+                        frontier.add_node(node)
+        if successors == False:
+            print("\nAbort! No solution!\n")
+            return False
