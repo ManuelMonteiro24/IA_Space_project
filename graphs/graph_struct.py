@@ -139,7 +139,6 @@ class Problem(Graph):
 
     def goal_test(self, current_node):
         if not self.goal_state.difference(set(current_node.modules_in_space)):
-            print("\n Goal achieved!\n")
             return True
         else:
             return False
