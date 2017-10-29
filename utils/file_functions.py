@@ -1,7 +1,7 @@
 import operator, utils.launch, graphs.graph_struct
 
 def read_input_file(file_name):
-    "Function that receives the name of file to read, proccess the data in it to a graph structure (composed by the modules and their connections) and a Launch structure both this structures are returned in the end of function. In case of error on opening the file the function returns None"
+    """Function that receives the name of file to read, proccess the data in it to a graph structure (composed by the modules and their connections) and a Launch structure both this structures are returned in the end of function. In case of error on opening the file the function returns None"""
 
     graph_obj = graphs.graph_struct.Graph();
     obj_launches = utils.launch.Launches()
@@ -54,7 +54,7 @@ def read_input_file(file_name):
         return None
 
 def generate_output(launches,solution_node):
-    "Function that receives the output of the search algorithm and the available launces and prints in the terminal the solution Launch by Launch with the total cost of the operation at the end. If a solution is not found '0' is printed "
+    """Function that receives the output of the search algorithm and the available launces and prints in the terminal the solution Launch by Launch with the total cost of the operation at the end. If a solution is not found '0' is printed """
 
     #no solution found
     if solution_node == False:

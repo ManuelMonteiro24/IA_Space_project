@@ -2,7 +2,7 @@ from strategy.queue_data import Queue, PriorityQueue
 from graphs.graph_struct import *
 
 def general_search(problem, frontier, launches):
-    "Function uniform cost general search algorithm implementation, without the update section so it could run faster "
+    """Function uniform cost general search algorithm implementation, without the update section so it could run faster"""
 
     iteration_count = 0
 

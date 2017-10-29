@@ -2,7 +2,7 @@ from strategy.modified_Queue import MyPriorityQueue
 from graphs.graph_struct import *
 
 def general_search(problem, frontier, launches):
-    "Function uniform cost general search algorithm implementation"
+    """Function uniform cost general search algorithm implementation"""
 
     initial_node = Node()
     frontier.add_node(initial_node)

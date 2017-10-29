@@ -1,7 +1,7 @@
 import datetime
 
 class Launch:
-    "Class that stores the data associated to a launch: date, max_payload, fixed_cost and variable_cost"
+    """Class that stores the data associated to a launch: date, max_payload, fixed_cost and variable_cost"""
 
     def __init__(self, date, max_payload, fixed_cost, variable_cost):
         self.date = date
@@ -20,7 +20,7 @@ class Launches:
         self.launch_dict = {}
 
     def ordered_insertion_on_list(self, launch):
-        "method that receives an instance of Launch an inserts it on the list ordered by date"
+        """method that receives an instance of Launch an inserts it on the list ordered by date"""
 
         #check if the date on the launch object is in a valid format
         try:
@@ -47,7 +47,7 @@ class Launches:
         return
 
     def generate_dictionary_trough_list(self):
-        "method that through the launch_list fills in the launches dictionary(self.launch_dict), only call this method after the method ordered_insertion_on_list() has been called"
+        """method that through the launch_list fills in the launches dictionary(self.launch_dict), only call this method after the method ordered_insertion_on_list() has been called"""
         iteration_count = 1
         for x in self.launch_list:
             self.launch_dict[iteration_count] = x

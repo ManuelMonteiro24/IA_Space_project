@@ -1,7 +1,7 @@
 from graphs.graph_struct import Node
 
 class MyPriorityQueue():
-    "Our implemented version of a PriorityQueue, where the priority element is the node.path_cost and the nodes with the lowest path cost get in begging of the list"
+    """Our implemented version of a PriorityQueue, where the priority element is the node.path_cost and the nodes with the lowest path cost get in begging of the list"""
 
     def __init__(self):
         self.list = list()
@@ -18,7 +18,7 @@ class MyPriorityQueue():
                     break
 
     def search_node(self, new_node):
-        "search the list for node with the same state (modules_in_space)"
+        """search the list for node with the same state (modules_in_space)"""
         if self.list_size == 0:
             return False
         else:
