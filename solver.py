@@ -8,7 +8,8 @@ from graphs.graph_struct import Graph
 from graphs.graph_struct import Problem
 from graphs.graph_struct import Node
 from utils import file_functions
-from uninformed_search_function2 import general_search
+from uniformed_manel import general_search
+from strategy.stack import Queue, PriorityQueue
 
 if (len(sys.argv) != 3) or not ((sys.argv[1] == "-i") or (sys.argv[1] == "-u")):
     print("Usage: solver.py search_flag(-i||-u) path_to_input_file")
@@ -28,7 +29,7 @@ launc_obj_output = copy.deepcopy(launch_obj)
 print(str(launch_obj))
 
 if sys.argv[1] == "-u":
-    strategy_obj = PriorityQueue()
+    strategy_obj = PriorityQueue(min, lambda node: node.path_cost)
     problem_obj = Problem(graph_obj.vertices)
     algorithm_result = general_search(problem_obj,strategy_obj, launch_obj)
 
