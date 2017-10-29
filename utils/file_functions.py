@@ -66,7 +66,7 @@ def generate_output(launches,solution_node):
 
     while (aux_node != None):
         if aux_node.weight != 0 or aux_node != None:
-            print(launches[aux_node.launch_id].date, " ", aux_node.launched, " ",  aux_node.launch_cost)
+            print(launches[aux_node.launch_id].date, " ", print_modules(aux_node.launched), " ",  aux_node.launch_cost)
             cost_sum += aux_node.launch_cost
 
         aux_node = aux_node.ancestor
@@ -79,3 +79,13 @@ def generate_output(launches,solution_node):
     '''
     print(cost_sum)
     return
+
+def print_modules(modules_string):
+    return_str = ""
+
+    for x in modules_string:
+        if x == '{' or x == '}' or x == "'" :
+            continue
+    else:
+         return_str += x
+    return return_str
