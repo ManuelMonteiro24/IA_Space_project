@@ -1,15 +1,4 @@
-from graphs.graph_struct import *
-
-class Stack:
-
-    def __init__(self):
-        self.lifo = []
-
-    def add(self,node):
-        self.lifo.append(node)
-
-    def remove(self):
-        return self.lifo.pop()
+from graphs.graph_struct import Node
 
 class MyPriorityQueue():
 

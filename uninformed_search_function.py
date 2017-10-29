@@ -4,7 +4,6 @@ from graphs.graph_struct import *
 
 def general_search(problem, strategy, launches):
 
-
     initial_node = Node()
     strategy.put(initial_node)
     explored = set()
