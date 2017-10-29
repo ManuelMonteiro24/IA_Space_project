@@ -1,12 +1,10 @@
 import operator, launch, graph.graph_struct
 
 def read_input_file(file_name):
-    "Function that receives name of file to read from and returns a structure with list of vertex, edges and launches"
+    "Function that receives the name of file to read, proccess the data in it to a graph structure (composed by the modules and their connections) and a Launch structure both this structures are returned in the end of function. In case of error on opening the file the function returns None"
 
     graph_obj = graph.graph_struct.Graph();
-
-    #data structs to test
-    obj_launches = Launch.Launches()
+    obj_launches = launch.Launches()
 
     try:
         with open(file_name, "r") as input_file:
@@ -16,17 +14,20 @@ def read_input_file(file_name):
                 if len(splitted_line) == 2:
                     #vertex line
                     if splitted_line[0][0] != "V":
+                        #vertex invalid line
                         continue
                     try:
                         float(splitted_line[1])
                         #valid vertex line
                         graph_obj.add_vertex(splitted_line[0], float(splitted_line[1]))
                     except ValueError:
+                        #vertex invalid line
                         continue
 
                 elif len(splitted_line) == 3:
                     #edge line
                     if splitted_line[0] != "E" or splitted_line[1][0] != "V" or splitted_line[2][0] != "V":
+                        #invalid edge line
                         continue
                     #valid edge line
                     graph_obj.add_edge(splitted_line[1], splitted_line[2])
@@ -34,27 +35,28 @@ def read_input_file(file_name):
                 elif len(splitted_line) == 5:
                     #launch line
                     if splitted_line[0] != "L" or len(splitted_line[1]) != 8:
+                        #invalid launch line
                         continue
 
-                    #valid launch line (still need to check date validity)
-                    launch_obj = Launch.Launch(splitted_line[1],float(splitted_line[2]),float(splitted_line[3]),float(splitted_line[4]))
+                    #valid launch line (still need to check date validity, this is done on the insertion on the Launches list)
+                    launch_obj = launch.Launch(splitted_line[1],float(splitted_line[2]),float(splitted_line[3]),float(splitted_line[4]))
                     obj_launches.ordered_insertion_on_list(launch_obj)
                 else:
                     continue
 
         obj_launches.generate_dictionary_trough_list()
 
-        return [graph_obj, obj_launches]
         input_file.close()
+        return [graph_obj, obj_launches]
 
     except IOError:
+        #error on opening the file
         return None
 
-
-#needs adaptation
 def generate_output(launches,solution_node):
-    "Function that receives a list with the solved launch data and generates the proper output file"
+    "Function that receives the output of the search algorithm and the available launces and prints in the terminal the solution Launch by Launch with the total cost of the operation at the end. If a solution is not found '0' is printed "
 
+    #no solution found
     if solution_node == False:
         print("0")
         return
