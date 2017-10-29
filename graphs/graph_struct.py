@@ -254,12 +254,12 @@ class Problem(Graph):
         launch_max_payload = launch_obj.launch_dict[current_node.launch_id+1].max_payload
 
         for n in range(len(modules_on_earth)):
-            total_weight = 0
             count_comb = 0
             count_breaks = 0
 
             for x in combinations(modules_on_earth, n+1):
                 count_comb += 1
+                total_weight = 0
                 successors_id = set()
 
                 #Checks if there is at least a module that is a neighbor of a module already in space, except for the first node with modules to be sent

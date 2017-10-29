@@ -10,7 +10,7 @@ def general_search(problem, frontier, launches):
     frontier.append(initial_node)
     explored = set()
 
-    while strategy:
+    while frontier:
 
         iteration_count = iteration_count + 1
 
