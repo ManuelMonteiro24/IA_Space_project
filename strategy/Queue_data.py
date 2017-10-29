@@ -36,14 +36,16 @@ class PriorityQueue(Queue):
         else:
             return self.A.pop()[1]
 
+    #deprecated by now
     def __contains__(self, item):
         return any(item == pair[1] for pair in self.A)
 
+    #deprecated by now
     def __getitem__(self, key):
         for _, item in self.A:
             if item == key:
                 return item
-
+    #deprecated by now
     def __delitem__(self, key):
         for i, (value, item) in enumerate(self.A):
             if item == key:
