@@ -28,7 +28,7 @@ class MyPriorityQueue():
         else:
             for node in self.list:
                 if len(node.modules_in_space) == len(new_node.modules_in_space) and not new_node.modules_in_space.difference(node.modules_in_space):
-                    if new_node < node:
+                    if new_node.path_cost < node.path_cost:
                         self.list.remove(node)
                         self.list_size = self.list_size - 1
                         self.add_node(new_node)

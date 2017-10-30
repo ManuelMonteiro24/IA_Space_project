@@ -139,7 +139,6 @@ class Problem(Graph):
 
     def goal_test(self, current_node):
         if not self.goal_state.difference(current_node.modules_in_space):
-            print("\n Goal achieved!\n")
             return True
         else:
             return False
@@ -221,11 +220,11 @@ class Problem(Graph):
     def find_successor(self, launch_obj, current_node):
         count_successors = 0
         modules_on_earth = set(self.vertices).difference(current_node.modules_in_space)
-        
+        '''
         print("\n----------- NEW SUCCESSORS -----------\n")
         print("Modules on earth: ", modules_on_earth)
         print("Modules in space ", current_node.modules_in_space)
-        '''
+        
         print("Launches available")
         
         for key in launch_obj.launch_dict.keys():
@@ -305,7 +304,7 @@ class Problem(Graph):
         new_node.launch_id = current_node.launch_id + 1 
         new_node.launch_payload = launch_max_payload
         new_node.weight = 0
-        new_node.path_cost = self.path_cost_calculator(current_node, new_node, launch_obj)
+        new_node.path_cost = current_node.path_cost
         new_node.launch_cost = 0
         new_node.ancestor = current_node
         new_node.modules_in_space = current_node.modules_in_space
