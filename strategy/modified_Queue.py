@@ -1,7 +1,6 @@
-from graphs.graph_struct import Node
+from graphs.graph_struct import *
 
 class MyPriorityQueue():
-    """Our implemented version of a PriorityQueue, where the priority element is the node.path_cost and the nodes with the lowest path cost get in begging of the list"""
 
     def __init__(self):
         self.list = list()
@@ -10,21 +9,47 @@ class MyPriorityQueue():
     def add_node(self, new_node):
         if self.list_size == 0:
             self.list.append(new_node)
+            self.list_size = self.list_size + 1
         else:
+            count = 0
             for node in self.list:
-                if new_node <= node:
-                    self.list.insert(0,new_node)
-                    self.list_size = self.list_size + 1
-                    break
+                if new_node < node:
+                    self.list.insert(count,new_node)
+                    self.list_size = self.list_size + 1                    
+                    return
+                count += 1
+            self.list.append(new_node)
+            self.list_size = self.list_size + 1 
+            return
 
-    def search_node(self, new_node):
-        """search the list for node with the same state (modules_in_space)"""
+    def update(self, new_node):
         if self.list_size == 0:
             return False
         else:
             for node in self.list:
-                if new_node.modules_in_space == node.modules_in_space:
-                        if new_node < node:
-                            self.list.remove(node)
-                            self.add_node(new_node)
-                        break
+                if len(node.modules_in_space) == len(new_node.modules_in_space) and not new_node.modules_in_space.difference(node.modules_in_space):
+                    if new_node < node:
+                        self.list.remove(node)
+                        self.list_size = self.list_size - 1
+                        self.add_node(new_node)
+                        return True
+            return False
+
+    def search(self, node):
+        for n in self.list:
+            if len(n.modules_in_space) == len(node.modules_in_space):
+                if not node.modules_in_space.difference(n.modules_in_space):
+                    return True
+        return False
+
+    def get_node(self):
+        priority_node = self.list[0]
+        self.list.remove(priority_node)
+        self.list_size = self.list_size - 1
+        return priority_node
+
+    def __str__(self):
+        return_str = ""
+        for node in self.list:
+            return_str += str(node) + " "
+        return return_str
