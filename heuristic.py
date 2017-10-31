@@ -17,3 +17,5 @@ def heuristic_2(node, launches):
         launch_id += 1
 
     return max(var_cost_max_pay_list) * node.weight
+
+def heuristic_3(node, launches):

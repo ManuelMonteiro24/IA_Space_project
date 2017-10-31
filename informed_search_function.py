@@ -3,6 +3,9 @@ from graphs.graph_struct import *
 from time import process_time
 import heuristic
 
+def print_algorithm_information(iteration_count, elapsed_time):
+    print("Iteration Count :", iteration_count, "Time taken: ", elapsed_time)
+
 def general_search(problem, frontier, launches, heuristic):
     "Function uniform cost general search algorithm implementation"
 
@@ -17,7 +20,7 @@ def general_search(problem, frontier, launches, heuristic):
         iteration_count = iteration_count + 1
         if not frontier.list:
             elapsed_time = process_time() - t
-            print("Iteration Count :", iteration_count, "Time taken: ", elapsed_time)
+            print_algorithm_information(iteration_count, elapsed_time)
             return False
 
         first_node = frontier.get_node()
@@ -25,7 +28,7 @@ def general_search(problem, frontier, launches, heuristic):
 
         if problem.goal_test(first_node):
             elapsed_time = process_time() - t
-            print("Iteration Count :", iteration_count, "Time taken: ", elapsed_time)
+            print_algorithm_information(iteration_count, elapsed_time)
             return first_node
 
         #print("\nFirst node: ", first_node)
@@ -51,5 +54,5 @@ def general_search(problem, frontier, launches, heuristic):
 
         if successors == False:
             elapsed_time = process_time() - t
-            print("Iteration Count :", iteration_count, "Time taken: ", elapsed_time)
+            print_algorithm_information(iteration_count, elapsed_time)
             return False
