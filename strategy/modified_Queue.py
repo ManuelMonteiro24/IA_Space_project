@@ -7,7 +7,7 @@ class MyPriorityQueue():
         self.list = list()
         self.list_size = 0
 
-    def add_node(self, new_node, heuristic = None, launches = None):
+    def add_node(self, new_node, heuristic = None, vertices = None, launches = None):
         if self.list_size == 0:
             self.list.append(new_node)
             self.list_size = self.list_size + 1
@@ -20,7 +20,7 @@ class MyPriorityQueue():
                         self.list_size = self.list_size + 1
                         return
                 else:
-                    if (new_node.path_cost + heuristic(new_node, launches)) < (node.path_cost + heuristic(node,  launches)):
+                    if (new_node.path_cost + heuristic(new_node, vertices, launches)) < (node.path_cost + heuristic(node, vertices, launches)):
                         self.list.insert(count,new_node)
                         self.list_size = self.list_size + 1
                         return
@@ -29,7 +29,7 @@ class MyPriorityQueue():
             self.list_size = self.list_size + 1
             return
 
-    def update(self, new_node, heuristic = None, launches = None):
+    def update(self, new_node, heuristic = None, vertices = None, launches = None):
         if self.list_size == 0:
             return False
         else:
@@ -42,7 +42,7 @@ class MyPriorityQueue():
                             self.add_node(new_node)
                             return True
                     else:
-                        if (new_node.path_cost + heuristic(new_node, launches)) < (node.path_cost + heuristic(node, launches)):
+                        if (new_node.path_cost + heuristic(new_node, vertices, launches)) < (node.path_cost + heuristic(node, vertices, launches)):
                             self.list.remove(node)
                             self.list_size = self.list_size - 1
                             self.add_node(new_node)
