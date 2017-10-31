@@ -11,7 +11,7 @@ def a_star_search(problem, launches, heuristic):
     iteration_count = 0
 
     initial_node = graphs.graph_struct.Node()
-    frontier.add_node(initial_node, heuristic, launches)
+    frontier.add_node(initial_node, heuristic, problem.vertices, launches)
     explored = set()
 
     while 1:
@@ -41,9 +41,9 @@ def a_star_search(problem, launches, heuristic):
             for node in list(successors.values()):
                 if frozenset(node.modules_in_space) not in explored:
                     if frontier.search(node) == True:
-                        frontier.update(node, heuristic, launches)
+                        frontier.update(node, heuristic, problem.vertices, launches)
                     else:
-                        frontier.add_node(node, heuristic, launches)
+                        frontier.add_node(initial_node, heuristic, problem.vertices, launches)
                 else:
                     if frontier.search(node) == False:
-                        frontier.add_node(node, heuristic, launches)
+                        frontier.add_node(initial_node, heuristic, problem.vertices, launches)
