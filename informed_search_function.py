@@ -1,15 +1,16 @@
 from strategy.modified_Queue import MyPriorityQueue
 from graphs.graph_struct import *
 from time import process_time
+import heuristic
 
-def general_search(problem, frontier, launches):
+def general_search(problem, frontier, launches, heuristic):
     "Function uniform cost general search algorithm implementation"
 
     t = process_time()
     iteration_count = 0
 
     initial_node = Node()
-    frontier.add_node(initial_node)
+    frontier.add_node(initial_node, heuristic, launches)
     explored = set()
 
     while 1:
@@ -38,15 +39,15 @@ def general_search(problem, frontier, launches):
 
                 if frozenset(node.modules_in_space) not in explored:
                     if frontier.search(node) == True:
-                        a = frontier.update(node)
+                        a = frontier.update(node, heuristic, launches)
                         #print("\tA", a)
                     else:
                         #print("\tB")
-                        frontier.add_node(node)
+                        frontier.add_node(node, heuristic, launches)
                 else:
                     if frontier.search(node) == False:
                         #print("\tC")
-                        frontier.add_node(node)
+                        frontier.add_node(node, heuristic, launches)
 
         if successors == False:
             elapsed_time = process_time() - t

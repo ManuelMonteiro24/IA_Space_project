@@ -13,7 +13,7 @@ class Launch:
         return "launch: %s %s %s %s" % (self.date, str(self.max_payload), str(self.fixed_cost), str(self.variable_cost))
 
 class Launches:
-    "Class that stores a list and dictionary with the launches ordered by date"
+    """Class that stores a list and dictionary with the launches ordered by date"""
 
     def __init__(self):
         self.launch_list = []
@@ -55,7 +55,6 @@ class Launches:
         return
 
     def __str__(self):
-
         return_str = "Launches dictionary:"
 
         for key, value in self.launch_dict.items():
