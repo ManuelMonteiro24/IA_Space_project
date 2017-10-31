@@ -1,6 +1,4 @@
-import heuristic
-from itertools import combinations
-from utils import file_functions
+import itertools
 
 class Vertex:
     def __init__(self, id_vertex, weight = -1):
@@ -16,25 +14,6 @@ class Vertex:
 
         else:
             return False
-
-    def add_neighbors(self, neighbors):
-        for neighbor in neighbors:
-            if isinstance(neighbor, Vertex):
-                if neighbor.id not in self.neighbors:
-                    self.neighbors.append(neighbor.id)
-                    neighbor.neighbors.append(self.id)
-
-            else:
-                return False
-
-    def get_neighbors(self):
-        return self.neighbors
-
-    #TODO understand
-    def __repr__(self):
-        return str(self.neighbors)
-
-
 
 class Graph:
     def __init__(self):
@@ -88,17 +67,12 @@ class Graph:
         del path[-1]
         return None
 
-
-    def adjacencyList(self):
+    def __str__(self):
+        """ Function to print a graph as adjacency list and adjacency matrix. """
         if len(self.vertices) >= 1:
                 return [str(key) + ", " + str(self.vertices[key].weight) + " :" + str(self.vertices[key]) for key in self.vertices.keys()]
         else:
-            return dict()
-
-
-    def __str__(self):
-        """ Function to print a graph as adjacency list and adjacency matrix. """
-        return str(self.adjacencyList())
+            return "Empty graph!"
 
 
 
@@ -170,7 +144,7 @@ class Problem(Graph):
         neigh = neigh.union(self.neighbors_modules_in_space)
         path_max = []
 
-        for i in combinations(combination, 2):
+        for i in itertools.combinations(combination, 2):
             path = []
             self.find_path(list(i)[0], list(i)[1], path)
             if len(path) > len(path_max):
@@ -214,17 +188,7 @@ class Problem(Graph):
     def find_successor(self, launch_obj, current_node):
         count_successors = 0
         modules_on_earth = set(self.vertices).difference(current_node.modules_in_space)
-        '''
-        print("\n----------- NEW SUCCESSORS -----------\n")
-        print("Modules on earth: ", modules_on_earth)
-        print("Modules in space ", current_node.modules_in_space)
 
-        print("Launches available")
-
-        for key in launch_obj.launch_dict.keys():
-            if key > current_node.launch_id:
-                print("\tLaunch ", key, ": ", launch_obj.launch_dict[key])
-        '''
         successors = dict()
         self.neighbors_modules_in_space = set()
 
@@ -244,7 +208,6 @@ class Problem(Graph):
                 return False
 
         if current_node.launch_id == list(launch_obj.launch_dict.keys())[-1]:
-            print("Last launch id: ", current_node.launch_id)
             return None
 
         launch_max_payload = launch_obj.launch_dict[current_node.launch_id+1].max_payload
@@ -254,7 +217,7 @@ class Problem(Graph):
             count_breaks = 0
             total_weight = 0
 
-            for x in combinations(modules_on_earth, n+1):
+            for x in itertools.combinations(modules_on_earth, n+1):
                 count_comb += 1
                 successors_id = set()
 

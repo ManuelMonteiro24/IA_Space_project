@@ -1,4 +1,4 @@
-import operator, re, utils.launch, graphs.graph_struct
+import re, utils.launch, graphs.graph_struct
 
 
 def read_input_file(file_name):
