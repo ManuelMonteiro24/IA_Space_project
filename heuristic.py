@@ -1,18 +1,31 @@
-def heuristic_1(node, launches):
-    return node.weight
+def heuristic_1(node, vertices, launches):
+	modules_on_earth = set(vertices).difference(node.modules_in_space)
+	total_weight = 0
 
-def heuristic_2(node, launches):
+	for n in modules_on_earth:
+		total_weight += vertices[n].weight
 
-    if node.weight == 0:
-        return 0
+	return total_weight
 
-    launch_id = node.launch_id
-    var_cost_max_pay_list = list ()
+#melhor ate agora
+def heuristic_2(node, vertices, launches):
+	modules_on_earth = set(vertices).difference(node.modules_in_space)
+	total_weight = 0
 
-    while launch_id <= len(launches.launch_dict):
+	if node.weight == 0:
+		return 0
 
-        var_cost_max_pay_list.append(launches.launch_dict[launch_id].variable_cost* launches.launch_dict[launch_id].max_payload)
+	for n in modules_on_earth:
+		total_weight += vertices[n].weight
 
-        launch_id += 1
+	launch_id = node.launch_id
+	var_cost_max_pay_list = list ()
 
-    return max(var_cost_max_pay_list) * node.weight
+	while launch_id <= len(launches.launch_dict):
+		var_cost_max_pay_list.append(launches.launch_dict[launch_id].variable_cost* launches.launch_dict[launch_id].max_payload)
+		launch_id += 1
+
+	return max(var_cost_max_pay_list)*total_weight
+
+
+
