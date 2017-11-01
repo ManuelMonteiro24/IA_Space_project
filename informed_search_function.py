@@ -13,7 +13,7 @@ def general_search(problem, frontier, launches, heuristic):
     iteration_count = 0
 
     initial_node = Node()
-    frontier.add_node(initial_node, heuristic, launches)
+    frontier.add_node(initial_node, heuristic, problem.vertices, launches)
     explored = set()
 
     while 1:
@@ -24,7 +24,6 @@ def general_search(problem, frontier, launches, heuristic):
             return False
 
         first_node = frontier.get_node()
-        #print(frontier)
 
         if problem.goal_test(first_node):
             elapsed_time = process_time() - t
@@ -42,15 +41,15 @@ def general_search(problem, frontier, launches, heuristic):
 
                 if frozenset(node.modules_in_space) not in explored:
                     if frontier.search(node) == True:
-                        a = frontier.update(node, heuristic, launches)
+                        a = frontier.update(node, heuristic, problem.vertices, launches)
                         #print("\tA", a)
                     else:
                         #print("\tB")
-                        frontier.add_node(node, heuristic, launches)
+                        frontier.add_node(node, heuristic, problem.vertices, launches)
                 else:
                     if frontier.search(node) == False:
                         #print("\tC")
-                        frontier.add_node(node, heuristic, launches)
+                        frontier.add_node(node, heuristic, problem.vertices, launches)
 
         if successors == False:
             elapsed_time = process_time() - t

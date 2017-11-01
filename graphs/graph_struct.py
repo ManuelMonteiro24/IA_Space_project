@@ -1,4 +1,5 @@
-import itertools
+from itertools import combinations
+from utils import file_functions
 
 class Vertex:
     """Class that represents a vertex of the graph used in the Problem. Each vertex is represented by the Module ID and contains its associated weight and a list of neighbors which represents the vertexes that it is connected to."""
@@ -15,6 +16,8 @@ class Vertex:
                 neighbor.neighbors.append(self.id)
         else:
             return False
+
+
 
 class Graph:
     """Class that represents the graph used in the Problem. It has a dictionary indexed by the vertex id (Module ID) that contains all the vertexes in the graph."""
@@ -90,6 +93,7 @@ class Node():
         self.path_cost = 0
         self.modules_in_space = set()
         self.launch_cost = 0
+        self.launched = set()
         self.ancestor = None
 
     def __lt__(self, other):
@@ -149,7 +153,7 @@ class Problem(Graph):
         neigh = neigh.union(self.neighbors_modules_in_space)
         path_max = []
 
-        for i in itertools.combinations(combination, 2):
+        for i in combinations(combination, 2):
             path = []
             self.find_path(list(i)[0], list(i)[1], path)
             if len(path) > len(path_max):
@@ -222,7 +226,7 @@ class Problem(Graph):
             count_breaks = 0
             total_weight = 0
 
-            for x in itertools.combinations(modules_on_earth, n+1):
+            for x in combinations(modules_on_earth, n+1):
                 count_comb += 1
                 successors_id = set()
 
