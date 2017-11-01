@@ -1,5 +1,4 @@
 from graphs.graph_struct import *
-from heuristic import *
 
 class MyPriorityQueue():
     """ Implementation of a Priority Queue with methods adapted to our problem."""
