@@ -1,5 +1,4 @@
-from itertools import combinations
-from utils import file_functions
+import itertools
 
 class Vertex:
     """Class that represents a vertex of the graph used in the Problem. Each vertex is represented by the Module ID and contains its associated weight and a list of neighbors which represents the vertexes that it is connected to."""
@@ -153,7 +152,7 @@ class Problem(Graph):
         neigh = neigh.union(self.neighbors_modules_in_space)
         path_max = []
 
-        for i in combinations(combination, 2):
+        for i in itertools.combinations(combination, 2):
             path = []
             self.find_path(list(i)[0], list(i)[1], path)
             if len(path) > len(path_max):
@@ -226,7 +225,7 @@ class Problem(Graph):
             count_breaks = 0
             total_weight = 0
 
-            for x in combinations(modules_on_earth, n+1):
+            for x in itertools.combinations(modules_on_earth, n+1):
                 count_comb += 1
                 successors_id = set()
 
