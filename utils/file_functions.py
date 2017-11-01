@@ -6,6 +6,7 @@ def read_input_file(file_name):
 
     graph_obj = graphs.graph_struct.Graph();
     obj_launches = utils.launch.Launches()
+    count_valid_edges = 0
 
     try:
         with open(file_name, "r") as input_file:
@@ -25,14 +26,6 @@ def read_input_file(file_name):
                         #invalid vertex line
                         continue
 
-                elif len(splitted_line) == 3:
-                    #edge line
-                    if splitted_line[0] != "E" or splitted_line[1][0] != "V" or splitted_line[2][0] != "V":
-                        #invalid edge line
-                        continue
-                    #valid edge line
-                    graph_obj.add_edge(splitted_line[1], splitted_line[2])
-
                 elif len(splitted_line) == 5:
                     #launch line
                     if splitted_line[0] != "L" or len(splitted_line[1]) != 8:
@@ -45,6 +38,23 @@ def read_input_file(file_name):
                 else:
                     #invalid line
                     continue
+
+            input_file.seek(0,0)
+
+            for line in input_file:
+                splitted_line = line.split()
+                if len(splitted_line) == 3:
+                    #edge line
+                    if splitted_line[0] != "E" or splitted_line[1][0] != "V" or splitted_line[2][0] != "V":
+                        #invalid edge line
+                        continue
+                    #valid edge line
+                    if graph_obj.add_edge(splitted_line[1], splitted_line[2]) == False:
+                        continue
+                    count_valid_edges += 1 
+
+        if count_valid_edges < len(graph_obj.vertices)-1:
+            return False
 
         obj_launches.generate_dictionary_trough_list()
 

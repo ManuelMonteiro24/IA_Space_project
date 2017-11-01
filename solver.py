@@ -8,6 +8,9 @@ inputdata = utils.file_functions.read_input_file(sys.argv[2])
 if inputdata == None:
     print("Error: Input file does not appear to exist.")
     sys.exit(1)
+if inputdata == False:
+    print("0")
+    sys.exit()
 
 problem_obj = graphs.graph_struct.Problem(inputdata[0].vertices)
 launch_obj = inputdata[1]

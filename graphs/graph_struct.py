@@ -25,19 +25,14 @@ class Graph:
 
 
     def add_vertex(self, vertex_id, vertex_weight = -1):
-        """Method that receives the data of a module and checks if it is already in the graph, if it isn't the vertex is created and added to the graph. If the vertex is already in the graph but doesn't has a weigth associated the weigth is added to the vertex."""
+        """Method that receives the data of a module and checks if it is already in the graph, if it isn't the vertex is created and added to the graph."""
         if self.get_vertex(vertex_id) is None:
             self.num_vertices += 1
-            if vertex_weight == -1:
-                #information about the vertex has not received only its connections
-                new_vertex = Vertex(vertex_id)
-            else:
+            if vertex_weight > 0:
                 new_vertex = Vertex(vertex_id, vertex_weight)
-            self.vertices[vertex_id] = new_vertex
-            return new_vertex
-        if self.vertices[vertex_id].weight == -1:
-            #vertex already in graph but doesn't have weigth associated
-            self.vertices[vertex_id].weight = vertex_weight
+                self.vertices[vertex_id] = new_vertex
+                return new_vertex
+        return
 
 
     def get_vertex(self, vertex_id):
@@ -51,12 +46,9 @@ class Graph:
     def add_edge(self, vertex_1_id, vertex_2_id):
         """Method that receives the module id's from two modules and connects them both in the graph"""
 
-        if self.get_vertex(vertex_1_id) == None:
-            #the first module isn't already on the graph we have to add it first
-            self.add_vertex(vertex_1_id)
-        if self.get_vertex(vertex_2_id) == None:
-            #the second module isn't already on the graph we have to add it first
-            self.add_vertex(vertex_2_id)
+        #the first or sencond module aren't already on the graph
+        if self.get_vertex(vertex_1_id) == None or self.get_vertex(vertex_2_id) == None:
+            return False
 
         self.vertices[vertex_1_id].add_neighbor(self.vertices[vertex_2_id])
         self.vertices[vertex_2_id].add_neighbor(self.vertices[vertex_1_id])
