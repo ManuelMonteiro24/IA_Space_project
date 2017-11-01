@@ -22,6 +22,8 @@ class Node():
 
 
 class Problem(graphs.graph_struct.Graph):
+    """Class that specifies the characteristics of the search problem "In orbit assembly of large structures". This includes the Full state space, all the combinations of modules in space, the inital state, a empty set represeting no modules in space,
+    the operators, set of actions that change the world state the goal test, that represents the condition that has to be satisfied at the goal state and the path cost, that represents the cost associated to a sequence of states/actions (sum of cost used to form the path)."""
     def __init__(self, vertices_input):
         self.goal_state = set(vertices_input)
         self.vertices = vertices_input
@@ -29,21 +31,27 @@ class Problem(graphs.graph_struct.Graph):
 
 
     def path_cost_calculator(self, current_node, new_node, launch_obj):
+        """Method that receives the node currently on analysis and a child none and returns the path_cost of this new child node. This is done by adding to the path cost of the current node
+        the fixed cost of the launch associated with the child none, plus the variable cost of the launch associated times the weight of the module that he is going to carry"""
         return (current_node.path_cost + launch_obj.launch_dict[new_node.launch_id].fixed_cost + new_node.weight*(launch_obj.launch_dict[new_node.launch_id].variable_cost))
 
 
     def launch_cost(self, new_node, launch_obj):
+        """Method that receives a node a calculates the launch cost associated. This is done by adding the launch fixed cost to the sum of the modules weight in transit times the launch variable cost.
+        The atribute launch_cost of the node received gets updated and this value is also returned."""
         new_node.launch_cost = launch_obj.launch_dict[new_node.launch_id].fixed_cost + new_node.weight*(launch_obj.launch_dict[new_node.launch_id].variable_cost)
         return  new_node.launch_cost
 
     def goal_test(self, current_node):
+        """Method that tests if the received node achieved the goal_state. This is done by checking if the modules in space in the node corresponds to all modules in space."""
         if not self.goal_state.difference(current_node.modules_in_space):
             return True
         else:
             return False
 
-    # Calculates total weight od the nodes on Earth and the sum of the launches'payloads
     def weight_calculator(self, current_node, launch_obj):
+        """Method that calculates the weight of all the modules still in land (returned as unlaunched_modules_weight)
+        and the sum of max_payload of each launch that can still be used (returned as launches_weight)."""
         unlaunched_modules_weight = 0
         launches_weight = 0
         for i in set(self.vertices).difference(current_node.modules_in_space):
@@ -51,11 +59,14 @@ class Problem(graphs.graph_struct.Graph):
 
         for key in set(launch_obj.launch_dict):
             if key > current_node.launch_id:
+                #only sum launches which the launch date is posterior to the current node launch
                 launches_weight += (launch_obj.launch_dict[key]).max_payload
         return unlaunched_modules_weight, launches_weight
 
 
     def check_if_neighbor_in_space(self, combination):
+        """Method that receives a combination of modules that we wish to send to space and for each module received it is going to be checked if it has a neighbor in space.
+        This is done to respect the following condition: """
         for i in combination:
             if i in self.neighbors_modules_in_space:
                 yield True

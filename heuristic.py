@@ -25,7 +25,4 @@ def heuristic_2(node, vertices, launches):
 		var_cost_max_pay_list.append(launches.launch_dict[launch_id].variable_cost* launches.launch_dict[launch_id].max_payload)
 		launch_id += 1
 
-	return max(var_cost_max_pay_list)*total_weight
-
-
-
+	return max(var_cost_max_pay_list)
