@@ -19,7 +19,7 @@ problem_obj = problem.problem.Problem(inputdata[0].vertices)
 launch_obj = inputdata[1]
 
 if sys.argv[1] == "-u":
-    algorithm_result = search_functions.uninformed_search_functions.breath_search(problem_obj, launch_obj)
+    algorithm_result = search_functions.uninformed_search_functions.uniform_search(problem_obj, launch_obj)
 else:
     algorithm_result = search_functions.informed_search_functions.a_star_search(problem_obj, launch_obj, heuristic.heuristic_2)
 
