@@ -47,11 +47,11 @@ def heuristic_2(node, vertices, launches):
 
 	aux = launch_id
 	while aux <= len(launches.launch_dict):
-		var_cost_max_pay_list.append(launches.launch_dict[aux].variable_cost* launches.launch_dict[launch_id].max_payload)
+		var_cost_max_pay_list.append(launches.launch_dict[aux].variable_cost*weight_on_earth/total_weight)
 		aux +=1
 
 	index_max = launch_id + var_cost_max_pay_list.index(max(var_cost_max_pay_list))
-	return max(var_cost_max_pay_list)*weight_on_earth
+	return launches.launch_dict[index_max].variable_cost*total_weight
 
 
 
