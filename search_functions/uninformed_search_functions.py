@@ -34,7 +34,7 @@ def uniform_search(problem, launches):
 
         explored.add(frozenset(first_node.modules_in_space))
 
-        successors = problem.find_successor(launches, first_node)
+        successors = problem.actions(launches, first_node)
 
         if successors != None and successors != False:
             for node in list(successors.values()):

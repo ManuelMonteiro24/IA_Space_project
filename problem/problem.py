@@ -125,7 +125,7 @@ class Problem(graphs.graph_struct.Graph):
         return False
 
 
-    def find_successor(self, launch_obj, current_node):
+    def actions(self, launch_obj, current_node):
         """Method that expands the current node on analysis and returns the expanded child nodes."""
 
         count_successors = 0

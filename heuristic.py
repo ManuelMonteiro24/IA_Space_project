@@ -54,35 +54,6 @@ def heuristic_2(node, vertices, launches):
 	return launches.launch_dict[index_max].variable_cost*total_weight
 
 
-
-def heuristic_3(node, vertices, launches):
-	modules_on_earth = set(vertices).difference(node.modules_in_space)
-	weight_on_earth = 0
-	total_weight = 0
-	var_cost_max_pay_list = list ()
-
-	if node.weight == 0:
-		if node.launch_id > 1:
-			launch_id = node.launch_id - 1
-		else:
-			return 0
-	else:
-		launch_id = node.launch_id
-
-	for n in modules_on_earth:
-		weight_on_earth += vertices[n].weight
-
-	for n in vertices.keys():
-		total_weight += vertices[n].weight
-
-	aux = launch_id
-	while aux <= len(launches.launch_dict):
-		var_cost_max_pay_list.append(launches.launch_dict[aux].variable_cost*weight_on_earth/total_weight)
-		aux += 1
-
-	index_max = launch_id + var_cost_max_pay_list.index(max(var_cost_max_pay_list))
-	return launches.launch_dict[index_max].variable_cost*total_weight
-
 def EBF(N, d):
 	b=1
 	delta = 10
@@ -91,6 +62,6 @@ def EBF(N, d):
 		for i in range(1, d+1):
 			N_aux += b**i
 		delta = abs(N_aux - N)
-		b += 0.00001
+		b += 0.000001
 
 	return b
