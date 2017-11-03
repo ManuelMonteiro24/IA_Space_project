@@ -21,7 +21,7 @@ launch_obj = inputdata[1]
 if sys.argv[1] == "-u":
     algorithm_result = search_functions.uninformed_search_functions.uniform_search(problem_obj, launch_obj)
 else:
-    algorithm_result, generated_nodes = search_functions.informed_search_functions.a_star_search(problem_obj, launch_obj, heuristic.heuristic_2)
+    algorithm_result, generated_nodes = search_functions.informed_search_functions.a_star_search(problem_obj, launch_obj, heuristic.heuristic_1)
     print("EBF: ", heuristic.EBF(generated_nodes, algorithm_result.launch_id))
 
 utils.file_functions.generate_output(launch_obj.launch_dict, algorithm_result)
