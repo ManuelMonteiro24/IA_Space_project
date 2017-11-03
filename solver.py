@@ -27,6 +27,5 @@ utils.file_functions.generate_output(launch_obj.launch_dict, algorithm_result)
 
 if sys.argv[1] == 'i':
 	print("EBF: ", heuristic.EBF(generated_nodes, solution_node.launch_id))
-	
-sys.exit()
 
+sys.exit()

@@ -23,6 +23,7 @@ def a_star_search(problem, launches, heuristic):
             return False
 
         first_node = frontier.get_node()
+        print("custo", first_node.path_cost)
 
         if problem.goal_test(first_node):
             elapsed_time = time.process_time() - t
@@ -50,4 +51,3 @@ def a_star_search(problem, launches, heuristic):
             elapsed_time = time.process_time() - t
             print_algorithm_information(iteration_count, elapsed_time)
             return False
-
