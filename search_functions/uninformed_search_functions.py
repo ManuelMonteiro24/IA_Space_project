@@ -1,3 +1,5 @@
+"""Function that contains the uniform search, breath search and depth search algorithm's"""
+
 import strategy.modified_Queue, problem.problem, time
 from problem.problem import *
 
@@ -17,7 +19,7 @@ def uniform_search(problem, launches):
 
     while 1:
         iteration_count = iteration_count + 1
-        if not frontier.list:
+        if not frontier:
             elapsed_time = time.process_time() - t
             print_algorithm_information(iteration_count, elapsed_time)
             return False
@@ -64,14 +66,12 @@ def breath_search(problem, launches):
 
     while 1:
         iteration_count = iteration_count + 1
-        if not frontier.list:
+        if not frontier:
             elapsed_time = time.process_time() - t
             print_algorithm_information(iteration_count, elapsed_time)
             return False
 
         first_node = frontier.pop(0)
-        #print(frontier)
-
         if problem.goal_test(first_node):
             elapsed_time = time.process_time() - t
             print_algorithm_information(iteration_count, elapsed_time)
@@ -84,10 +84,7 @@ def breath_search(problem, launches):
         if successors != None and successors != False:
             for node in list(successors.values()):
 
-                if frozenset(node.modules_in_space) not in explored:
-                        frontier.append(node)
-                else:
-                    if node not in frontier:
+                if (frozenset(node.modules_in_space) not in explored) and (node not in frontier):
                         frontier.append(node)
 
         if successors == False:
@@ -108,7 +105,7 @@ def depth_search(problem, launches):
 
     while 1:
         iteration_count = iteration_count + 1
-        if not frontier.list:
+        if not frontier:
             elapsed_time = time.process_time() - t
             print_algorithm_information(iteration_count, elapsed_time)
             return False
@@ -127,10 +124,7 @@ def depth_search(problem, launches):
         if successors != None and successors != False:
             for node in list(successors.values()):
 
-                if frozenset(node.modules_in_space) not in explored:
-                        frontier.append(node)
-                else:
-                    if node not in frontier:
+                if (frozenset(node.modules_in_space) not in explored) and (node not in frontier):
                         frontier.append(node)
 
         if successors == False:

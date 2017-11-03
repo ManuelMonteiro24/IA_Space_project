@@ -1,18 +1,20 @@
+"""File that contains the Classes Problem and Node that define the search problem."""
+
 import itertools, graphs.graph_struct
 
 class Node():
     """Class that represents the node type that is utilized in the problem. Each node contains: launch_id, that represents the associated launch;
     launch_payload, with the modules that are carried to space; weight, that represents the total weight of modules to launched; path_cost; modules_in_space, a set with the modules already in space;
     launch_cost, that represents the total cost of the launch with the modules in it; ancestor, that represents the parent node from which this node has expanded, in case of the first node this one is None."""
-    def __init__(self):
-        self.launch_id = 0
-        self.launch_payload = -1
-        self.weight = 0
-        self.path_cost = 0
-        self.modules_in_space = set()
-        self.launch_cost = 0
-        self.launched = set()
-        self.ancestor = None
+    def __init__(self, launch_id = 0, launch_payload = -1, weight = 0, path_cost = 0, modules_in_space = set(), launch_cost = 0, launched = set(), ancestor = None):
+        self.launch_id = launch_id
+        self.launch_payload = launch_payload
+        self.weight = weight
+        self.path_cost = path_cost
+        self.modules_in_space = modules_in_space
+        self.launch_cost = launch_cost
+        self.launched = launched
+        self.ancestor = ancestor
 
     def __lt__(self, other):
         return self.path_cost < other.path_cost
@@ -28,7 +30,6 @@ class Problem(graphs.graph_struct.Graph):
         self.goal_state = set(vertices_input)
         self.vertices = vertices_input
         self.neighbors_modules_in_space = set()
-
 
     def path_cost_calculator(self, current_node, new_node, launch_obj):
         """Method that receives the node currently on analysis and a child none and returns the path_cost of this new child node. This is done by adding to the path cost of the current node
@@ -73,6 +74,7 @@ class Problem(graphs.graph_struct.Graph):
 
 
     def modules_connected(self, current_node, combination):
+        """Method that receives the current_node on analysis and a set of modules (still on Earth) and returns true if it possible to send those modules to the space, else returns false."""
         neigh = set()
         extra_modules = set()
 
@@ -124,6 +126,8 @@ class Problem(graphs.graph_struct.Graph):
 
 
     def find_successor(self, launch_obj, current_node):
+        """Method that expands the current node on analysis and returns the expanded child nodes."""
+
         count_successors = 0
         modules_on_earth = set(self.vertices).difference(current_node.modules_in_space)
 
@@ -178,15 +182,9 @@ class Problem(graphs.graph_struct.Graph):
 
                 if total_weight != 0:
                     count_successors += 1
-                    new_node = Node()
-                    new_node.launch_id = current_node.launch_id + 1
-                    new_node.launch_payload = launch_max_payload
-                    new_node.weight = total_weight
+                    new_node = Node(current_node.launch_id + 1, launch_max_payload, total_weight, 0, current_node.modules_in_space.union(successors_id), 0, successors_id, current_node)
                     new_node.path_cost = self.path_cost_calculator(current_node, new_node, launch_obj)
                     new_node.launch_cost = self.launch_cost(new_node, launch_obj)
-                    new_node.launched = successors_id
-                    new_node.ancestor = current_node
-                    new_node.modules_in_space = current_node.modules_in_space.union(successors_id)
                     successors[frozenset(new_node.modules_in_space)] = new_node
                     total_weight = 0
 
@@ -195,14 +193,7 @@ class Problem(graphs.graph_struct.Graph):
                 break
 
         count_successors += 1
-        new_node = Node()
-        new_node.launch_id = current_node.launch_id + 1
-        new_node.launch_payload = launch_max_payload
-        new_node.weight = 0
-        new_node.path_cost = current_node.path_cost
-        new_node.launch_cost = 0
-        new_node.ancestor = current_node
-        new_node.modules_in_space = current_node.modules_in_space
+        new_node = Node(current_node.launch_id + 1, launch_max_payload, 0, current_node.path_cost, current_node.modules_in_space, 0, set(), current_node)
         successors[frozenset(new_node.modules_in_space)] = new_node
 
         return successors

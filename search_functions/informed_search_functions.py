@@ -1,3 +1,5 @@
+"""File that contains the A* search algorithm"""
+
 import strategy.modified_Queue, heuristic, time
 from problem.problem import *
 

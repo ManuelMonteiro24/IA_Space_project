@@ -1,3 +1,5 @@
+"""File that contains the heuristic's functions"""
+
 def heuristic_1(node, vertices, launches):
 	modules_on_earth = set(vertices).difference(node.modules_in_space)
 	total_weight = 0

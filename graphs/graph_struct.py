@@ -1,3 +1,4 @@
+"""File that contains the graph and the vertex class used in the search problem"""
 
 class Vertex:
     """Class that represents a vertex of the graph used in the Problem. Each vertex is represented by the Module ID and contains its associated weight and a list of neighbors which represents the vertexes that it is connected to."""

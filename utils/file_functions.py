@@ -1,3 +1,4 @@
+"""File that contains the functions that reads the input data from the file (read_input_file) and generate output of the solution found (generate_output)"""
 import re, utils.launch, graphs.graph_struct
 
 
@@ -51,7 +52,7 @@ def read_input_file(file_name):
                     #valid edge line
                     if graph_obj.add_edge(splitted_line[1], splitted_line[2]) == False:
                         continue
-                    count_valid_edges += 1 
+                    count_valid_edges += 1
 
         if count_valid_edges < len(graph_obj.vertices)-1:
             return False
