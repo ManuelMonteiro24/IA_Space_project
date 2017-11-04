@@ -15,7 +15,7 @@ def uniform_search(problem, launches):
 
     initial_node = Node()
     frontier.add_node(initial_node)
-    explored = set()
+    explored = list()
 
     while 1:
         iteration_count = iteration_count + 1
@@ -32,14 +32,13 @@ def uniform_search(problem, launches):
             print_algorithm_information(iteration_count, elapsed_time)
             return first_node
 
-        explored.add(frozenset(first_node.modules_in_space))
-
+        explored.append(first_node.modules_in_space)
         successors = problem.actions(launches, first_node)
 
         if successors != None and successors != False:
-            for node in list(successors.values()):
-
-                if frozenset(node.modules_in_space) not in explored:
+            for node in successors.values():
+                
+                if node.modules_in_space not in explored:
                     if frontier.search(node) == True:
                         a = frontier.update(node)
                     else:

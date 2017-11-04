@@ -6,7 +6,7 @@ class Node():
     """Class that represents the node type that is utilized in the problem. Each node contains: launch_id, that represents the associated launch;
     launch_payload, with the modules that are carried to space; weight, that represents the total weight of modules to launched; path_cost; modules_in_space, a set with the modules already in space;
     launch_cost, that represents the total cost of the launch with the modules in it; ancestor, that represents the parent node from which this node has expanded, in case of the first node this one is None."""
-    def __init__(self, launch_id = 0, launch_payload = -1, weight = 0, path_cost = 0, modules_in_space = set(), launch_cost = 0, launched = set(), ancestor = None):
+    def __init__(self, launch_id = 0, launch_payload = -1, weight = 0, path_cost = 0, modules_in_space = [], launch_cost = 0, launched = set(), ancestor = None):
         self.launch_id = launch_id
         self.launch_payload = launch_payload
         self.weight = weight
@@ -27,7 +27,7 @@ class Problem(graphs.graph_struct.Graph):
     """Class that specifies the characteristics of the search problem "In orbit assembly of large structures". This includes the Full state space, all the combinations of modules in space, the inital state, a empty set represeting no modules in space,
     the operators, set of actions that change the world state the goal test, that represents the condition that has to be satisfied at the goal state and the path cost, that represents the cost associated to a sequence of states/actions (sum of cost used to form the path)."""
     def __init__(self, vertices_input):
-        self.goal_state = set(vertices_input)
+        self.goal_state = list(vertices_input)
         self.vertices = vertices_input
         self.neighbors_modules_in_space = set()
 
@@ -45,7 +45,7 @@ class Problem(graphs.graph_struct.Graph):
 
     def goal_test(self, current_node):
         """Method that tests if the received node achieved the goal_state. This is done by checking if the modules in space in the node corresponds to all modules in space."""
-        if not self.goal_state.difference(current_node.modules_in_space):
+        if not set(self.goal_state).difference(set(current_node.modules_in_space)):
             return True
         else:
             return False
@@ -55,7 +55,7 @@ class Problem(graphs.graph_struct.Graph):
         and the sum of max_payload of each launch that can still be used (returned as launches_weight)."""
         unlaunched_modules_weight = 0
         launches_weight = 0
-        for i in set(self.vertices).difference(current_node.modules_in_space):
+        for i in set(self.vertices).difference(set(current_node.modules_in_space)):
             unlaunched_modules_weight += (self.vertices[i]).weight
 
         for key in set(launch_obj.launch_dict):
@@ -92,9 +92,9 @@ class Problem(graphs.graph_struct.Graph):
 
         for j in path_max:
             if (j not in list(combination)):
-                if current_node.modules_in_space and (j not in current_node.modules_in_space):
+                if in_modules_in_space(current_node) and (j not in current_node.modules_in_space):
                     return False
-                if not current_node.modules_in_space:
+                if in_modules_in_space(current_node):
                     return False
 
         if len(path_max) == len(combination):
@@ -129,13 +129,14 @@ class Problem(graphs.graph_struct.Graph):
         """Method that expands the current node on analysis and returns the expanded child nodes."""
 
         count_successors = 0
-        modules_on_earth = set(self.vertices).difference(current_node.modules_in_space)
+        modules_on_earth = set(self.vertices).difference(set(current_node.modules_in_space))
 
         successors = dict()
         self.neighbors_modules_in_space = set()
 
         for i in current_node.modules_in_space:
-            self.neighbors_modules_in_space = self.neighbors_modules_in_space.union(set(self.vertices[i].neighbors))
+            if i != "":
+                self.neighbors_modules_in_space = self.neighbors_modules_in_space.union(set(self.vertices[i].neighbors))
 
         if not launch_obj.launch_dict:
             return False
@@ -164,7 +165,7 @@ class Problem(graphs.graph_struct.Graph):
                 successors_id = set()
 
                 #Checks if there is at least a module that is a neighbor of a module already in space, except for the first node with modules to be sent
-                if current_node.modules_in_space and list(self.check_if_neighbor_in_space(x)) == []:
+                if in_modules_in_space(current_node) and list(self.check_if_neighbor_in_space(x)) == []:
                     continue
 
                 #Check if there is connection between modules
@@ -182,10 +183,19 @@ class Problem(graphs.graph_struct.Graph):
 
                 if total_weight != 0:
                     count_successors += 1
-                    new_node = Node(current_node.launch_id + 1, launch_max_payload, total_weight, 0, current_node.modules_in_space.union(successors_id), 0, successors_id, current_node)
+                    count = 0
+                    for i in current_node.modules_in_space:
+                        if i == "":
+                            count += 1
+                    new_node = Node(current_node.launch_id + 1, launch_max_payload, total_weight, 0, list(), 0, successors_id, current_node)
+                    new_node.modules_in_space = list(set(current_node.modules_in_space).union(successors_id))
+
+                    for i in range(0,count):
+                        new_node.modules_in_space.append("")
+                    
                     new_node.path_cost = self.path_cost_calculator(current_node, new_node, launch_obj)
                     new_node.launch_cost = self.launch_cost(new_node, launch_obj)
-                    successors[frozenset(new_node.modules_in_space)] = new_node
+                    successors[count_successors] = new_node
                     total_weight = 0
 
             #if for a combination of n modules there are no successors to add there won't be for combinations with higher than n modules (weight is greater)
@@ -193,7 +203,15 @@ class Problem(graphs.graph_struct.Graph):
                 break
 
         count_successors += 1
-        new_node = Node(current_node.launch_id + 1, launch_max_payload, 0, current_node.path_cost, current_node.modules_in_space, 0, set(), current_node)
-        successors[frozenset(new_node.modules_in_space)] = new_node
+        new_node = Node(current_node.launch_id + 1, launch_max_payload, 0, current_node.path_cost, list(), 0, set(), current_node)
+        new_node.modules_in_space = current_node.modules_in_space + [""]
+        successors[count_successors] = new_node
 
         return successors
+
+
+def in_modules_in_space(node):
+        for i in node.modules_in_space:
+            if i != "":
+                return True
+        return False

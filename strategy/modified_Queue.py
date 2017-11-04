@@ -58,7 +58,7 @@ class MyPriorityQueue():
                             self.add_node(new_node)
                             return True
             return False
-
+    '''
     def search(self, node):
         """Function that receives a node and checks if it is on the queue. The search is done by state (modules_in_space)."""
         for n in self.list:
@@ -66,6 +66,16 @@ class MyPriorityQueue():
                 if not node.modules_in_space.difference(n.modules_in_space):
                     return True
         return False
+    '''
+
+    def search(self, node):
+        """Function that receives a node and checks if it is on the queue. The search is done by state (modules_in_space)."""
+        for n in self.list:
+            if len(n.modules_in_space) == len(node.modules_in_space):
+                if node.modules_in_space in n.modules_in_space:
+                    return True
+        return False
+    
 
     def get_node(self):
         """Function that removes from the list and returns the node with highest priority."""
