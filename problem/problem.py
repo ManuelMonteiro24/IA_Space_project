@@ -35,12 +35,12 @@ class Problem(graphs.graph_struct.Graph):
         """Method that receives the node currently on analysis and a child none and returns the path_cost of this new child node. This is done by adding to the path cost of the current node
         the fixed cost of the launch associated with the child none, plus the variable cost of the launch associated times the weight of the module that he is going to carry"""
         aux_node = current_node
-        while aux_node.ancestor != None:
+        while aux_node != None:
             if aux_node.weight != 0:
                 path_cost_prev = aux_node.path_cost
                 break
             aux_node = aux_node.ancestor
-            
+
         if aux_node.weight == 0:
             path_cost_prev = 0    
 
