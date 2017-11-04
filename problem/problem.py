@@ -34,7 +34,17 @@ class Problem(graphs.graph_struct.Graph):
     def path_cost_calculator(self, current_node, new_node, launch_obj):
         """Method that receives the node currently on analysis and a child none and returns the path_cost of this new child node. This is done by adding to the path cost of the current node
         the fixed cost of the launch associated with the child none, plus the variable cost of the launch associated times the weight of the module that he is going to carry"""
-        return (current_node.path_cost + launch_obj.launch_dict[new_node.launch_id].fixed_cost + new_node.weight*(launch_obj.launch_dict[new_node.launch_id].variable_cost))
+        aux_node = current_node
+        while aux_node.ancestor != None:
+            if aux_node.weight != 0:
+                path_cost_prev = aux_node.path_cost
+                break
+            aux_node = aux_node.ancestor
+            
+        if aux_node.weight == 0:
+            path_cost_prev = 0    
+
+        return (path_cost_prev + launch_obj.launch_dict[new_node.launch_id].fixed_cost + new_node.weight*(launch_obj.launch_dict[new_node.launch_id].variable_cost))
 
 
     def launch_cost(self, new_node, launch_obj):
@@ -203,7 +213,7 @@ class Problem(graphs.graph_struct.Graph):
                 break
 
         count_successors += 1
-        new_node = Node(current_node.launch_id + 1, launch_max_payload, 0, current_node.path_cost, list(), 0, set(), current_node)
+        new_node = Node(current_node.launch_id + 1, launch_max_payload, 0, 0, list(), 0, set(), current_node)
         new_node.modules_in_space = current_node.modules_in_space + [str(new_node.launch_id)]
         successors[count_successors] = new_node
 
