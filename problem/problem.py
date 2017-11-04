@@ -73,7 +73,7 @@ class Problem(graphs.graph_struct.Graph):
                 yield True
 
 
-    def modules_connected(self, current_node, combination):
+    def modules_connected(self, current_node, combination, launch_obj):
         """Method that receives the current_node on analysis and a set of modules (still on Earth) and returns true if it possible to send those modules to the space, else returns false."""
         neigh = set()
         extra_modules = set()
@@ -92,9 +92,9 @@ class Problem(graphs.graph_struct.Graph):
 
         for j in path_max:
             if (j not in list(combination)):
-                if in_modules_in_space(current_node) and (j not in current_node.modules_in_space):
+                if in_modules_in_space(current_node, launch_obj) and (j not in current_node.modules_in_space):
                     return False
-                if in_modules_in_space(current_node):
+                if in_modules_in_space(current_node, launch_obj):
                     return False
 
         if len(path_max) == len(combination):
@@ -135,7 +135,7 @@ class Problem(graphs.graph_struct.Graph):
         self.neighbors_modules_in_space = set()
 
         for i in current_node.modules_in_space:
-            if i != "":
+            if check_launches_id(i, launch_obj) == False:
                 self.neighbors_modules_in_space = self.neighbors_modules_in_space.union(set(self.vertices[i].neighbors))
 
         if not launch_obj.launch_dict:
@@ -165,11 +165,11 @@ class Problem(graphs.graph_struct.Graph):
                 successors_id = set()
 
                 #Checks if there is at least a module that is a neighbor of a module already in space, except for the first node with modules to be sent
-                if in_modules_in_space(current_node) and list(self.check_if_neighbor_in_space(x)) == []:
+                if in_modules_in_space(current_node, launch_obj) and list(self.check_if_neighbor_in_space(x)) == []:
                     continue
 
                 #Check if there is connection between modules
-                if self.modules_connected(current_node, x) == False and n>0:
+                if self.modules_connected(current_node, x, launch_obj) == False and n>0:
                     continue
 
                 #Check if launch max. payload is enough to send the set of modules
@@ -204,14 +204,23 @@ class Problem(graphs.graph_struct.Graph):
 
         count_successors += 1
         new_node = Node(current_node.launch_id + 1, launch_max_payload, 0, current_node.path_cost, list(), 0, set(), current_node)
-        new_node.modules_in_space = current_node.modules_in_space + [""]
+        new_node.modules_in_space = current_node.modules_in_space + [str(new_node.launch_id)]
         successors[count_successors] = new_node
 
         return successors
 
 
-def in_modules_in_space(node):
+def in_modules_in_space(node, launch_obj):
         for i in node.modules_in_space:
-            if i != "":
+            if check_launches_id(i, launch_obj) == False:
                 return True
         return False
+
+def check_launches_id(i, launch_obj):
+
+    aux= 1
+    while aux <= len(launch_obj.launch_dict):
+        if i == str(aux):
+            return True    
+        aux += 1
+    return False    
